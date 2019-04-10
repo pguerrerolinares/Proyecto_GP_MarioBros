@@ -9,24 +9,29 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import euiti.mariobros.MarioBrosGP;
+import euiti.mariobros.MarioBros;
 
 public class LayoutScreen {
     // TODO: https://github.com/libgdx/libgdx/wiki/Table
     Stage stage;
-    Viewport viewport;
+    private Viewport viewport;
 
-    int worldTimer;
-    float timeCount;
-    int score;
+    private int worldTimer;
+    private float timeCount;
+    private int score;
 
-    Label scoreLb, timeLb, levelLb, worldLb, marioLb, countLb, joke;
+    private Label scoreLb;
+    private Label levelLb;
+    private Label worldLb;
+    private Label marioLb;
+    private Label countLb;
+    private Label joke;
 
     public LayoutScreen(SpriteBatch spriteBatch) {
         worldTimer = 300;
         timeCount = 0;
         score = 0;
-        viewport = new FitViewport(MarioBrosGP.WIDTH, MarioBrosGP.HEIGHT, new OrthographicCamera());
+        viewport = new FitViewport(MarioBros.getMarioBros().getWIDTH(), MarioBros.getMarioBros().getHEIGHT(), new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
 
         Table infoLayout = new Table();
@@ -38,7 +43,7 @@ public class LayoutScreen {
 
         countLb = new Label(Integer.toString(worldTimer), labelStyle);
         scoreLb = new Label(Integer.toString(score), labelStyle);
-        timeLb = new Label("TIME", labelStyle);
+        Label timeLb = new Label("TIME", labelStyle);
         levelLb = new Label("1-1", labelStyle);
         worldLb = new Label("WORLD", labelStyle);
         marioLb = new Label("MARIO", labelStyle);

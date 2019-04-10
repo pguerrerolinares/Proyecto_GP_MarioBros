@@ -5,13 +5,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import euiti.mariobros.screens.MainScreen;
 
-public class MarioBrosGP extends Game {
-    public static final int WIDTH = 400;
-    public static final int HEIGHT = 208;
-
-
-
+public class MarioBros extends Game {
+    private final int WIDTH = 340;
+    private final int HEIGHT = 200;
+    private static MarioBros myMarioBros;
     private SpriteBatch batch;
+
+
+    public static MarioBros getMarioBros() {
+        if (myMarioBros == null)
+            myMarioBros = new MarioBros();
+        return myMarioBros;
+    }
 
     @Override
     public void create() {
@@ -30,6 +35,13 @@ public class MarioBrosGP extends Game {
 
     }
 
+    public int getWIDTH() {
+        return WIDTH;
+    }
+
+    public int getHEIGHT() {
+        return HEIGHT;
+    }
 
     public SpriteBatch getBatch() {
         return batch;
