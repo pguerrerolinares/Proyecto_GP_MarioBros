@@ -34,16 +34,23 @@ public class MainScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
 
     // Colisiones
-    private World world;
+    public World world;
     private Box2DDebugRenderer box2DDebugRenderer;
 
     // Mario
 
 
+    // movimiento
+    private float PPM;
+
+
     public MainScreen(MarioBros marioBros) {
+        // mov
+        PPM = MarioBros.getMarioBros().getPPM();
+
         gameMain = marioBros;
         gameCam = new OrthographicCamera();
-        gamePort = new FitViewport(MarioBros.getMarioBros().getWIDTH(), MarioBros.getMarioBros().getHEIGHT()
+        gamePort = new FitViewport(MarioBros.getMarioBros().getWIDTH() / PPM, MarioBros.getMarioBros().getHEIGHT() / PPM
                 , gameCam);
         layoutScreen = new LayoutScreen(gameMain.getBatch());
 
@@ -52,7 +59,7 @@ public class MainScreen implements Screen {
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("core/assets/marioMap.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / PPM);
 
 
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
@@ -61,6 +68,7 @@ public class MainScreen implements Screen {
         // In Box2D 1 unit = 1 meter.
         int gravityX = 0;
         int gravityY = -10;
+
         world = new World(new Vector2(gravityX, gravityY), true);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
@@ -77,9 +85,9 @@ public class MainScreen implements Screen {
         for (MapObject mapObject : map.getLayers().get(idGround).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(rectangle.getX() + rectangle.getWidth() / 2, rectangle.getY() + rectangle.getHeight() / 2);
+            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PPM, (rectangle.getY() + rectangle.getHeight() / 2) / PPM);
             body = world.createBody(bodyDef);
-            polygonShape.setAsBox(rectangle.getWidth() / 2, rectangle.getHeight() / 2);
+            polygonShape.setAsBox(rectangle.getWidth() / 2 / PPM, rectangle.getHeight() / 2 / PPM);
             fixtureDef.shape = polygonShape;
             body.createFixture(fixtureDef);
         }
@@ -88,9 +96,9 @@ public class MainScreen implements Screen {
         for (MapObject mapObject : map.getLayers().get(idPipe).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(rectangle.getX() + rectangle.getWidth() / 2, rectangle.getY() + rectangle.getHeight() / 2);
+            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PPM, (rectangle.getY() + rectangle.getHeight() / 2) / PPM);
             body = world.createBody(bodyDef);
-            polygonShape.setAsBox(rectangle.getWidth() / 2, rectangle.getHeight() / 2);
+            polygonShape.setAsBox(rectangle.getWidth() / 2 / PPM, rectangle.getHeight() / 2 / PPM);
             fixtureDef.shape = polygonShape;
             body.createFixture(fixtureDef);
         }
@@ -99,9 +107,9 @@ public class MainScreen implements Screen {
         for (MapObject mapObject : map.getLayers().get(idBrick).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(rectangle.getX() + rectangle.getWidth() / 2, rectangle.getY() + rectangle.getHeight() / 2);
+            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PPM, (rectangle.getY() + rectangle.getHeight() / 2) / PPM);
             body = world.createBody(bodyDef);
-            polygonShape.setAsBox(rectangle.getWidth() / 2, rectangle.getHeight() / 2);
+            polygonShape.setAsBox(rectangle.getWidth() / 2 / PPM, rectangle.getHeight() / 2 / PPM);
 
             fixtureDef.shape = polygonShape;
             body.createFixture(fixtureDef);
@@ -110,7 +118,7 @@ public class MainScreen implements Screen {
 
         // marios ?
         Player.getMyPlayer();
-        Player.getMyPlayer().setWorld(world);
+        Player.getMyPlayer().setWorld(this);
 
     }
 
@@ -149,7 +157,8 @@ public class MainScreen implements Screen {
 
 
         // mover la camara con marios
-        gameCam.position.x = Player.getMyPlayer().getBody().getPosition().x;
+        gameCam.position.x = Player.getMyPlayer().getBody().getPosition().x
+        ;
 
         gameCam.update();
 
@@ -162,6 +171,7 @@ public class MainScreen implements Screen {
         Vector2 movRight = Player.getMyPlayer().getImpulseRight();
         Vector2 movLeft = Player.getMyPlayer().getImpulseLeft();
         Body playerBody = Player.getMyPlayer().getBody();
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             playerBody.applyLinearImpulse(movUp, centerMassPlayer, true);
         }
