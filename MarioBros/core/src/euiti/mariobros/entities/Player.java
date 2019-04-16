@@ -30,7 +30,7 @@ public class Player extends Sprite {
 
 
     public Player(World world, MainScreen screen) {
-        super(screen.getTextureAtlas().findRegion("walk_right1"));
+        super(screen.getTextureAtlas().findRegion("walk_left1"));
         this.world = world;
 
 
@@ -38,7 +38,7 @@ public class Player extends Sprite {
         defineMov();
 
 
-        mario = new TextureRegion(getTexture(), 2, 188, 36, 64);
+        mario = new TextureRegion(getTexture(), 187, 2, 35, 65);
 
         setBounds(0, 0, 12 / MarioBros.PPM, 24 / MarioBros.PPM);
         setRegion(mario);
