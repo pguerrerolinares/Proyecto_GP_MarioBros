@@ -1,5 +1,5 @@
 name=MarioPacker
-filename=
+filename=MarioPacker.atlas
 output=.
 
 alias=true
@@ -32,7 +32,7 @@ limitMemory=true
 useIndexes=true
 
 scaleFactors=[{suffix:"",factor:1,resampling:bicubic}]
-inputFiles=[{path:walk_right1.png,type:Input,regionName:null},{path:walk_right2.png,type:Input,regionName:null},{path:walk_left1.png,type:Input,regionName:null},{path:walk_left2.png,type:Input,regionName:null}]
+inputFiles=[{path:walk_left1.png,type:Input,regionName:null},{path:walk_left2.png,type:Input,regionName:null},{path:walk_right2.png,type:Input,regionName:null},{path:still_right.png,type:Input,regionName:null},{path:still_left.png,type:Input,regionName:null},{path:jump_right.png,type:Input,regionName:null},{path:jump_left.png,type:Input,regionName:null},{path:walk_right1.png,type:Input,regionName:null}]
 
 
 -PROJ-

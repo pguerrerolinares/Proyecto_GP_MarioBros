@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import euiti.mariobros.MarioBros;
 import euiti.mariobros.screens.MainScreen;
+import javafx.stage.Stage;
 
 public class Player extends Sprite {
 
@@ -23,6 +24,11 @@ public class Player extends Sprite {
     private Vector2 impulseRight;
     private Vector2 impulseLeft;
 
+    public enum State {JUMPING, STANDING}
+
+    public State actualState;
+
+
     public Player(World world, MainScreen screen) {
         super(screen.getTextureAtlas().findRegion("walk_right1"));
         this.world = world;
@@ -34,8 +40,10 @@ public class Player extends Sprite {
 
         mario = new TextureRegion(getTexture(), 2, 188, 36, 64);
 
-        setBounds(0, 0, 16 / MarioBros.PPM, 32 / MarioBros.PPM);
+        setBounds(0, 0, 12 / MarioBros.PPM, 24 / MarioBros.PPM);
         setRegion(mario);
+
+        actualState = State.STANDING;
 
     }
 
@@ -60,13 +68,13 @@ public class Player extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(14 / MarioBros.PPM);
+        shape.setRadius(10 / MarioBros.PPM);
         fixtureDef.shape = shape;
         body.createFixture(fixtureDef).setUserData(this);
 
     }
 
-    public void update(float dt) {
+    public void update() {
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
     }
 
@@ -74,19 +82,28 @@ public class Player extends Sprite {
         return body;
     }
 
-    public Vector2 getCenterMass() {
-        return centerMass;
+
+    public void jump() {
+        if (getActualState() == State.STANDING)
+            body.applyLinearImpulse(impulseUp, centerMass, true);
     }
 
-    public Vector2 getImpulseUp() {
-        return impulseUp;
+    public void moveRight() {
+        if (body.getLinearVelocity().x <= 2)
+            body.applyLinearImpulse(impulseRight, centerMass, true);
     }
 
-    public Vector2 getImpulseRight() {
-        return impulseRight;
+    public void moveLeft() {
+        if (body.getLinearVelocity().x >= -2)
+            body.applyLinearImpulse(impulseLeft, centerMass, true);
+
     }
 
-    public Vector2 getImpulseLeft() {
-        return impulseLeft;
+    public State getActualState() {
+        if (body.getLinearVelocity().y > 0 || body.getLinearVelocity().y < 0) {
+            return State.JUMPING;
+        } else {
+            return State.STANDING;
+        }
     }
 }
