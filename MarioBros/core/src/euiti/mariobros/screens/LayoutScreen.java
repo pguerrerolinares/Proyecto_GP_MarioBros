@@ -14,10 +14,13 @@ import euiti.mariobros.MarioBros;
 public class LayoutScreen {
     // TODO: https://github.com/libgdx/libgdx/wiki/Table
     Stage stage;
-
+    Label.LabelStyle labelStyle;
+    Label countLb;
+    
     LayoutScreen(SpriteBatch spriteBatch) {
         int worldTimer = 300;
         float timeCount = 0;
+        
         int score = 0;
         Viewport viewport = new FitViewport(MarioBros.WIDTH, MarioBros.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
@@ -27,9 +30,9 @@ public class LayoutScreen {
 
         //tamaño del stage
         infoLayout.setFillParent(true);
-        Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+        labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-        Label countLb = new Label(Integer.toString(worldTimer), labelStyle);
+        countLb = new Label(Integer.toString(worldTimer), labelStyle);
         Label scoreLb = new Label(Integer.toString(score), labelStyle);
         Label timeLb = new Label("TIME", labelStyle);
         Label levelLb = new Label("1-1", labelStyle);
@@ -50,7 +53,11 @@ public class LayoutScreen {
         infoLayout.add(levelLb).expandX();
         infoLayout.add(countLb).expandX();
 
-
+        
         stage.addActor(infoLayout);
     }
+    public void setTime(int time) {
+    	countLb.setText(time);
+    }
+    
 }

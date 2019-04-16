@@ -44,7 +44,7 @@ public class MainScreen implements Screen {
 
     public MainScreen(MarioBros game) {
 
-        textureAtlas = new TextureAtlas("core/assets/MarioPacker.atlas");
+        textureAtlas = new TextureAtlas("MarioPacker.atlas");
 
         gameMain = game;
         // movimiento
@@ -60,7 +60,7 @@ public class MainScreen implements Screen {
 
         // backgroup - mapa
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("core/assets/marioMap.tmx");
+        TiledMap map = mapLoader.load("marioMap.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / PPM);
 
 
@@ -79,7 +79,6 @@ public class MainScreen implements Screen {
 
         mario = new Player(world, this);
         mario.setPosition(mario.getBody().getPosition().x - mario.getWidth() / 2, mario.getBody().getPosition().y - mario.getHeight() / 2);
-
     }
 
     public TextureAtlas getTextureAtlas() {
