@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import euiti.mariobros.MarioBros;
 import euiti.mariobros.screens.MainScreen;
-import javafx.stage.Stage;
+
 
 public class Player extends Sprite {
 
