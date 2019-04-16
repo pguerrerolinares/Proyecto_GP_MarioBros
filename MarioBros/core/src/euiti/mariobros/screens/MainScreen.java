@@ -5,60 +5,62 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import euiti.mariobros.CollisionWorld;
 import euiti.mariobros.MarioBros;
 import euiti.mariobros.entities.Player;
 
 public class MainScreen implements Screen {
-    // TODO: Tipos de viewport: https://github.com/libgdx/libgdx/wiki/Viewports
-    // TODO: Colisión: Box2DDebugRenderer
+
     private MarioBros gameMain;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
     private LayoutScreen layoutScreen;
 
 
-    // backgroup - mapa
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
     // Colisiones
-    public World world;
+    private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
 
     // Mario
+    private Player mario;
 
 
-    // movimiento
-    private float PPM;
+    // Sprites
+    TextureAtlas textureAtlas;
 
 
-    public MainScreen(MarioBros marioBros) {
-        // mov
-        PPM = MarioBros.getMarioBros().getPPM();
+    public MainScreen(MarioBros game) {
 
-        gameMain = marioBros;
+        textureAtlas = new TextureAtlas("core/assets/MarioPacker.atlas");
+
+        gameMain = game;
+        // movimiento
+        float PPM = MarioBros.PPM;
+
         gameCam = new OrthographicCamera();
-        gamePort = new FitViewport(MarioBros.getMarioBros().getWIDTH() / PPM, MarioBros.getMarioBros().getHEIGHT() / PPM
+        gamePort = new FitViewport(MarioBros.WIDTH / PPM, MarioBros.HEIGHT / PPM
                 , gameCam);
-        layoutScreen = new LayoutScreen(gameMain.getBatch());
+        layoutScreen = new LayoutScreen(game.batch);
 
 
         world = new World(new Vector2(0, -10), true);
 
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("core/assets/marioMap.tmx");
+        // backgroup - mapa
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        TiledMap map = mapLoader.load("core/assets/marioMap.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / PPM);
 
 
@@ -72,54 +74,16 @@ public class MainScreen implements Screen {
         world = new World(new Vector2(gravityX, gravityY), true);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-
-        BodyDef bodyDef = new BodyDef();
-        PolygonShape polygonShape = new PolygonShape();
-        FixtureDef fixtureDef = new FixtureDef();
-        Body body;
-
-        // suelo
-        // mirar el id del tited map
-        int fixId = -1;
-        int idGround = 3 + fixId;
-        for (MapObject mapObject : map.getLayers().get(idGround).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PPM, (rectangle.getY() + rectangle.getHeight() / 2) / PPM);
-            body = world.createBody(bodyDef);
-            polygonShape.setAsBox(rectangle.getWidth() / 2 / PPM, rectangle.getHeight() / 2 / PPM);
-            fixtureDef.shape = polygonShape;
-            body.createFixture(fixtureDef);
-        }
-
-        int idPipe = 4 + fixId;
-        for (MapObject mapObject : map.getLayers().get(idPipe).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PPM, (rectangle.getY() + rectangle.getHeight() / 2) / PPM);
-            body = world.createBody(bodyDef);
-            polygonShape.setAsBox(rectangle.getWidth() / 2 / PPM, rectangle.getHeight() / 2 / PPM);
-            fixtureDef.shape = polygonShape;
-            body.createFixture(fixtureDef);
-        }
-
-        int idBrick = 6 + fixId;
-        for (MapObject mapObject : map.getLayers().get(idBrick).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PPM, (rectangle.getY() + rectangle.getHeight() / 2) / PPM);
-            body = world.createBody(bodyDef);
-            polygonShape.setAsBox(rectangle.getWidth() / 2 / PPM, rectangle.getHeight() / 2 / PPM);
-
-            fixtureDef.shape = polygonShape;
-            body.createFixture(fixtureDef);
-        }
+        new CollisionWorld(world, map);
 
 
-        // marios ?
-        Player.getMyPlayer();
-        Player.getMyPlayer().setWorld(this);
+        mario = new Player(world, this);
+        mario.setPosition(mario.getBody().getPosition().x - mario.getWidth() / 2, mario.getBody().getPosition().y - mario.getHeight() / 2);
 
+    }
+
+    public TextureAtlas getTextureAtlas() {
+        return textureAtlas;
     }
 
     @Override
@@ -131,54 +95,54 @@ public class MainScreen implements Screen {
     public void render(float delta) {
         update(delta);
 
-
-        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // primero render luego layout, sino render sobreescrite al layout
+//        stage.act();
+        //      stage.draw();
+
         renderer.render();
 
-        // dar colisiones
         box2DDebugRenderer.render(world, gameCam.combined);
 
-        // pintar layout
-        gameMain.getBatch().setProjectionMatrix(layoutScreen.stage.getCamera().combined);
+        gameMain.batch.setProjectionMatrix(gameCam.combined);
+        gameMain.batch.begin();
+        mario.draw(gameMain.batch);
+        gameMain.batch.end();
+
+
+        gameMain.batch.setProjectionMatrix(layoutScreen.stage.getCamera().combined);
         layoutScreen.stage.draw();
 
 
     }
 
     private void update(float dt) {
-        handleInput(dt);
+        handleInput();
 
-
-        //  Stepping the simulation
         world.step(1 / 60f, 6, 2);
 
+        mario.update(dt);
 
-        // mover la camara con marios
-        gameCam.position.x = Player.getMyPlayer().getBody().getPosition().x
-        ;
+        gameCam.position.x = mario.getBody().getPosition().x;
 
         gameCam.update();
-
         renderer.setView(gameCam);
     }
 
-    private void handleInput(float dt) {
-        Vector2 centerMassPlayer = Player.getMyPlayer().getCenterMass();
-        Vector2 movUp = Player.getMyPlayer().getImpulseUp();
-        Vector2 movRight = Player.getMyPlayer().getImpulseRight();
-        Vector2 movLeft = Player.getMyPlayer().getImpulseLeft();
-        Body playerBody = Player.getMyPlayer().getBody();
+    private void handleInput() {
+        Vector2 centerMassPlayer = mario.getCenterMass();
+        Vector2 movUp = mario.getImpulseUp();
+        Vector2 movRight = mario.getImpulseRight();
+        Vector2 movLeft = mario.getImpulseLeft();
+        Body playerBody = mario.getBody();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             playerBody.applyLinearImpulse(movUp, centerMassPlayer, true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && playerBody.getLinearVelocity().x <= 2) {
             playerBody.applyLinearImpulse(movRight, centerMassPlayer, true);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && playerBody.getLinearVelocity().x >= -2) {
             playerBody.applyLinearImpulse(movLeft, centerMassPlayer, true);
         }
     }

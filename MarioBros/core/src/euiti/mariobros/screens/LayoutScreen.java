@@ -14,24 +14,12 @@ import euiti.mariobros.MarioBros;
 public class LayoutScreen {
     // TODO: https://github.com/libgdx/libgdx/wiki/Table
     Stage stage;
-    private Viewport viewport;
 
-    private int worldTimer;
-    private float timeCount;
-    private int score;
-
-    private Label scoreLb;
-    private Label levelLb;
-    private Label worldLb;
-    private Label marioLb;
-    private Label countLb;
-    private Label joke;
-
-    public LayoutScreen(SpriteBatch spriteBatch) {
-        worldTimer = 300;
-        timeCount = 0;
-        score = 0;
-        viewport = new FitViewport(MarioBros.getMarioBros().getWIDTH(), MarioBros.getMarioBros().getHEIGHT(), new OrthographicCamera());
+    LayoutScreen(SpriteBatch spriteBatch) {
+        int worldTimer = 300;
+        float timeCount = 0;
+        int score = 0;
+        Viewport viewport = new FitViewport(MarioBros.WIDTH, MarioBros.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
 
         Table infoLayout = new Table();
@@ -41,13 +29,13 @@ public class LayoutScreen {
         infoLayout.setFillParent(true);
         Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
-        countLb = new Label(Integer.toString(worldTimer), labelStyle);
-        scoreLb = new Label(Integer.toString(score), labelStyle);
+        Label countLb = new Label(Integer.toString(worldTimer), labelStyle);
+        Label scoreLb = new Label(Integer.toString(score), labelStyle);
         Label timeLb = new Label("TIME", labelStyle);
-        levelLb = new Label("1-1", labelStyle);
-        worldLb = new Label("WORLD", labelStyle);
-        marioLb = new Label("MARIO", labelStyle);
-        joke = new Label("FULL KUNVIA", labelStyle);
+        Label levelLb = new Label("1-1", labelStyle);
+        Label worldLb = new Label("WORLD", labelStyle);
+        Label marioLb = new Label("MARIO", labelStyle);
+        Label joke = new Label("FULL KUNVIA", labelStyle);
 
         final int padTop = 10;
 
