@@ -97,9 +97,6 @@ public class MainScreen implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-//        stage.act();
-        //      stage.draw();
-
         renderer.render();
 
         box2DDebugRenderer.render(world, gameCam.combined);
@@ -121,7 +118,7 @@ public class MainScreen implements Screen {
 
         world.step(1 / 60f, 6, 2);
 
-        mario.update(dt);
+        mario.update();
 
         gameCam.position.x = mario.getBody().getPosition().x;
 
@@ -130,20 +127,17 @@ public class MainScreen implements Screen {
     }
 
     private void handleInput() {
-        Vector2 centerMassPlayer = mario.getCenterMass();
-        Vector2 movUp = mario.getImpulseUp();
-        Vector2 movRight = mario.getImpulseRight();
-        Vector2 movLeft = mario.getImpulseLeft();
-        Body playerBody = mario.getBody();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            playerBody.applyLinearImpulse(movUp, centerMassPlayer, true);
+            mario.jump();
+
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && playerBody.getLinearVelocity().x <= 2) {
-            playerBody.applyLinearImpulse(movRight, centerMassPlayer, true);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            mario.moveRight();
+
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && playerBody.getLinearVelocity().x >= -2) {
-            playerBody.applyLinearImpulse(movLeft, centerMassPlayer, true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            mario.moveLeft();
         }
     }
 
