@@ -56,8 +56,8 @@ public class LayoutScreen {
         
         stage.addActor(infoLayout);
     }
-    public void setTime(int time) {
-    	countLb.setText(time);
+    public void addTime() {
+    	countLb.getText();
     }
     
 }

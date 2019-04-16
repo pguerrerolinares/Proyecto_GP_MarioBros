@@ -26,7 +26,7 @@ public class MainScreen implements Screen {
     private OrthographicCamera gameCam;
     private Viewport gamePort;
     private LayoutScreen layoutScreen;
-
+    private long time = System.currentTimeMillis(); //Tiempo
 
     private OrthogonalTiledMapRenderer renderer;
 
@@ -92,6 +92,14 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float delta) {
+    	//CONTADOR
+    	long currentTime = System.currentTimeMillis();
+    	if(((currentTime-time)/1000) == 1) {
+    		//layoutScreen.setTime();
+    	}
+    	
+    	
+    	
         update(delta);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
