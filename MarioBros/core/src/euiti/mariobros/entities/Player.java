@@ -1,92 +1,84 @@
-package euiti.mariobros.entities;
+package euiti.mariobros.entities
 
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import euiti.mariobros.MarioBros;
-import euiti.mariobros.screens.MainScreen;
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.*
+import euiti.mariobros.MarioBros
+import euiti.mariobros.screens.MainScreen
 
-public class Player extends Sprite {
-
-    private World world;
+class Player(private val world: World, screen: MainScreen) : Sprite(screen.textureAtlas.findRegion("walk_right1")) {
 
 
-    private TextureRegion mario;
+    private val mario: TextureRegion
 
-    private Body body;
+    var body: Body? = null
+        private set
 
-    private Vector2 centerMass;
-    private Vector2 impulseUp;
-    private Vector2 impulseRight;
-    private Vector2 impulseLeft;
+    private var centerMass: Vector2? = null
+    private var impulseUp: Vector2? = null
+    private var impulseRight: Vector2? = null
+    private var impulseLeft: Vector2? = null
 
-    public Player(World world, MainScreen screen) {
-        super(screen.getTextureAtlas().findRegion("walk_right1"));
-        this.world = world;
-
-
-        defineMario();
-        defineMov();
+    init {
 
 
-        mario = new TextureRegion(getTexture(), 2, 188, 36, 64);
+        defineMario()
+        defineMov()
 
-        setBounds(0, 0, 16 / MarioBros.PPM, 32 / MarioBros.PPM);
-        setRegion(mario);
+
+        mario = TextureRegion(texture, 2, 188, 36, 64)
+
+        setBounds(0f, 0f, 12 / MarioBros.PPM, 24 / MarioBros.PPM)
+        setRegion(mario)
 
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(mario, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        batch.draw(mario, x, y, originX, originY, width, height, scaleX, scaleY, rotation)
     }
 
-    private void defineMov() {
-        centerMass = this.body.getWorldCenter();
-        impulseUp = new Vector2(0, 4f);
-        impulseRight = new Vector2(0.1f, 0);
-        impulseLeft = new Vector2(-0.1f, 0);
+    private fun defineMov() {
+        centerMass = this.body!!.worldCenter
+        impulseUp = Vector2(0f, 4f)
+        impulseRight = Vector2(0.1f, 0f)
+        impulseLeft = Vector2(-0.1f, 0f)
     }
 
-    private void defineMario() {
-        BodyDef bodyDef = new BodyDef();
+    private fun defineMario() {
+        val bodyDef = BodyDef()
 
-        bodyDef.position.set(32 / MarioBros.PPM, 32 / MarioBros.PPM);
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        body = world.createBody(bodyDef);
+        bodyDef.position.set(32 / MarioBros.PPM, 32 / MarioBros.PPM)
+        bodyDef.type = BodyDef.BodyType.DynamicBody
+        body = world.createBody(bodyDef)
 
-        FixtureDef fixtureDef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(14 / MarioBros.PPM);
-        fixtureDef.shape = shape;
-        body.createFixture(fixtureDef).setUserData(this);
+        val fixtureDef = FixtureDef()
+        val shape = CircleShape()
+        shape.radius = 10 / MarioBros.PPM
+        fixtureDef.shape = shape
+        body!!.createFixture(fixtureDef).userData = this
 
     }
 
-    public void update(float dt) {
-        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+    fun update() {
+        setPosition(body!!.position.x - width / 2, body!!.position.y - height / 2)
     }
 
-    public Body getBody() {
-        return body;
+
+    fun jump() {
+        body!!.applyLinearImpulse(impulseUp!!, centerMass!!, true)
     }
 
-    public Vector2 getCenterMass() {
-        return centerMass;
+    fun moveRight() {
+        if (body!!.linearVelocity.x <= 2)
+            body!!.applyLinearImpulse(impulseRight!!, centerMass!!, true)
     }
 
-    public Vector2 getImpulseUp() {
-        return impulseUp;
-    }
+    fun moveLeft() {
+        if (body!!.linearVelocity.x >= -2)
+            body!!.applyLinearImpulse(impulseLeft!!, centerMass!!, true)
 
-    public Vector2 getImpulseRight() {
-        return impulseRight;
-    }
-
-    public Vector2 getImpulseLeft() {
-        return impulseLeft;
     }
 }
