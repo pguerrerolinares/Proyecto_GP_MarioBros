@@ -95,7 +95,8 @@ public class MainScreen implements Screen {
     	//CONTADOR
     	long currentTime = System.currentTimeMillis();
     	if(((currentTime-time)/1000) == 1) {
-    		//layoutScreen.setTime();
+    		layoutScreen.addTime();
+    		time = currentTime;
     	}
     	
     	

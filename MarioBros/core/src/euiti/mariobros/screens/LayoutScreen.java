@@ -19,7 +19,6 @@ public class LayoutScreen {
     
     LayoutScreen(SpriteBatch spriteBatch) {
         int worldTimer = 300;
-        float timeCount = 0;
         
         int score = 0;
         Viewport viewport = new FitViewport(MarioBros.WIDTH, MarioBros.HEIGHT, new OrthographicCamera());
@@ -56,8 +55,15 @@ public class LayoutScreen {
         
         stage.addActor(infoLayout);
     }
-    public void addTime() {
-    	countLb.getText();
-    }
     
+    //CONTADOR
+    public void addTime() {
+    	String actual = countLb.getText().toString();
+    	int time = Integer.parseInt(actual);
+    	if(time>0) {
+        	countLb.setText(time - 1);
+    	}else { // ESTO ES PROVISIONAL
+    		System.out.println("Fin partida");
+    	}
+    }
 }
