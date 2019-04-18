@@ -87,14 +87,17 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         //CONTADOR
         long currentTime = System.currentTimeMillis();
         if (((currentTime - time) / 1000) == 1) {
-            //layoutScreen.setTime();
+            layoutScreen.addTime();
+            time = currentTime;
         }
 
 
-        update();
+        update(delta);
+
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -114,7 +117,7 @@ public class MainScreen implements Screen {
 
     }
 
-    private void update() {
+    private void update(float dt) {
         handleInput();
 
         world.step(1 / 60f, 6, 2);
