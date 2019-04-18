@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import euiti.mariobros.MarioBros;
+import euiti.mariobros.system.MarioBros;
 import euiti.mariobros.screens.MainScreen;
 
 
@@ -89,17 +89,17 @@ public class Player extends Sprite {
     }
 
     public void moveRight() {
-        if (body.getLinearVelocity().x <= 2)
+        if (body.getLinearVelocity().x <= 1.7)
             body.applyLinearImpulse(impulseRight, centerMass, true);
     }
 
     public void moveLeft() {
-        if (body.getLinearVelocity().x >= -2)
+        if (body.getLinearVelocity().x >= -1.7)
             body.applyLinearImpulse(impulseLeft, centerMass, true);
 
     }
 
-    public State getActualState() {
+    private State getActualState() {
         if (body.getLinearVelocity().y > 0 || body.getLinearVelocity().y < 0) {
             return State.JUMPING;
         } else {

@@ -6,18 +6,16 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import euiti.mariobros.CollisionWorld;
-import euiti.mariobros.MarioBros;
+import euiti.mariobros.system.MarioBros;
 import euiti.mariobros.entities.Player;
 
 public class MainScreen implements Screen {
@@ -39,12 +37,10 @@ public class MainScreen implements Screen {
 
 
     // Sprites
-    TextureAtlas textureAtlas;
+    private TextureAtlas textureAtlas = new TextureAtlas("MarioPacker.atlas");
 
 
     public MainScreen(MarioBros game) {
-
-        textureAtlas = new TextureAtlas("MarioPacker.atlas");
 
         gameMain = game;
         // movimiento
@@ -67,11 +63,8 @@ public class MainScreen implements Screen {
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         // colisiones
-        // In Box2D 1 unit = 1 meter.
-        int gravityX = 0;
-        int gravityY = -10;
 
-        world = new World(new Vector2(gravityX, gravityY), true);
+        world = new World(MarioBros.GRAVITY, true);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         new CollisionWorld(world, map);
@@ -79,6 +72,8 @@ public class MainScreen implements Screen {
 
         mario = new Player(world, this);
         mario.setPosition(mario.getBody().getPosition().x - mario.getWidth() / 2, mario.getBody().getPosition().y - mario.getHeight() / 2);
+
+
     }
 
     public TextureAtlas getTextureAtlas() {
@@ -92,15 +87,14 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float delta) {
-    	//CONTADOR
-    	long currentTime = System.currentTimeMillis();
-    	if(((currentTime-time)/1000) == 1) {
-    		//layoutScreen.setTime();
-    	}
-    	
-    	
-    	
-        update(delta);
+        //CONTADOR
+        long currentTime = System.currentTimeMillis();
+        if (((currentTime - time) / 1000) == 1) {
+            //layoutScreen.setTime();
+        }
+
+
+        update();
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -120,7 +114,7 @@ public class MainScreen implements Screen {
 
     }
 
-    private void update(float dt) {
+    private void update() {
         handleInput();
 
         world.step(1 / 60f, 6, 2);

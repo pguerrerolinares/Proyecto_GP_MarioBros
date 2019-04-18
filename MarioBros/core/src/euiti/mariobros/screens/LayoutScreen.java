@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import euiti.mariobros.MarioBros;
+import euiti.mariobros.system.MarioBros;
 
 public class LayoutScreen {
     // TODO: https://github.com/libgdx/libgdx/wiki/Table
