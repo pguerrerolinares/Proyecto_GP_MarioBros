@@ -7,19 +7,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import euiti.mariobros.system.MarioBros;
 
-public class LayoutScreen {
+public class LayoutScreen implements Disposable {
     // TODO: https://github.com/libgdx/libgdx/wiki/Table
     Stage stage;
     Label.LabelStyle labelStyle;
     Label countLb;
-    
+
     LayoutScreen(SpriteBatch spriteBatch) {
         int worldTimer = 300;
-        
+
         int score = 0;
         Viewport viewport = new FitViewport(MarioBros.WIDTH, MarioBros.HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, spriteBatch);
@@ -52,18 +54,25 @@ public class LayoutScreen {
         infoLayout.add(levelLb).expandX();
         infoLayout.add(countLb).expandX();
 
-        
+
         stage.addActor(infoLayout);
     }
-    
+
     //CONTADOR
     public void addTime() {
-    	String actual = countLb.getText().toString();
-    	int time = Integer.parseInt(actual);
-    	if(time>0) {
-        	countLb.setText(time - 1);
-    	}else { // ESTO ES PROVISIONAL
-    		System.out.println("Fin partida");
-    	}
+        String actual = countLb.getText().toString();
+        int time = Integer.parseInt(actual);
+        if (time > 0) {
+            countLb.setText(time - 1);
+        } else { // ESTO ES PROVISIONAL
+            System.out.println("Fin partida");
+
+            // new GameOverScreen
+        }
+    }
+
+    @Override
+    public void dispose() {
+        this.stage.dispose();
     }
 }

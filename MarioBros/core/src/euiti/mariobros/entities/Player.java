@@ -1,11 +1,11 @@
 package euiti.mariobros.entities;
 
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+
+import com.badlogic.gdx.utils.Array;
 import euiti.mariobros.system.MarioBros;
 import euiti.mariobros.screens.MainScreen;
 
@@ -13,10 +13,6 @@ import euiti.mariobros.screens.MainScreen;
 public class Player extends Sprite {
 
     private World world;
-
-
-    private TextureRegion mario;
-
     private Body body;
 
     private Vector2 centerMass;
@@ -24,44 +20,71 @@ public class Player extends Sprite {
     private Vector2 impulseRight;
     private Vector2 impulseLeft;
 
-    public enum State {JUMPING, STANDING}
+    private Animation<TextureRegion> marioRun;
+    private TextureRegion marioJump;
 
-    public State actualState;
+    private TextureRegion marioNoMove;
+
+    private TextureRegion marioDead;
+    private TextureRegion bigMarioStand;
+    private TextureRegion bigMarioJump;
+    private boolean movDirection;
+    private float stateTimer;
+
+    public enum State {JUMPING, STANDING, FALLING, RUNNING}
+
+    private State actualState;
+    private State prevState;
 
 
-    public Player(World world, MainScreen screen) {
-        super(screen.getTextureAtlas().findRegion("walk_left1"));
-        this.world = world;
+    public Player(MainScreen screen) {
+        movDirection = true;
+
+        this.world = screen.getWorld();
 
 
-        defineMario();
+        defineMarioBody();
         defineMov();
 
+        Array<TextureRegion> walkAnimation = new Array<TextureRegion>();
+        //walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right1"), 108, 0, 16, 32));
+        walkAnimation.add(new TextureRegion(createRegion(screen, "jump_right"), 0, 0, 16, 32));
+        walkAnimation.add(new TextureRegion(createRegion(screen, "jump_right"), 39, 2, 16, 32));
 
-        mario = new TextureRegion(getTexture(), 187, 2, 35, 65);
+        // walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right1"), 261, 2, 35, 60));
+        //walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right2"), 76, 2, 35, 60));
+        //walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right2"), 76, 2, 35, 60));
 
-        setBounds(0, 0, 12 / MarioBros.PPM, 24 / MarioBros.PPM);
-        setRegion(mario);
+        marioRun = new Animation<TextureRegion>(0.1f, walkAnimation);
 
-        actualState = State.STANDING;
 
+        marioJump = new TextureRegion(createRegion(screen, "jump_right"), 0, 0, 16, 32);
+
+
+        marioNoMove = new TextureRegion(createRegion(screen, "still_right"), 0, 0, 16, 32);
+
+        setBounds(0, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
+        setRegion(marioNoMove);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(mario, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+        batch.draw(marioNoMove, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 
     private void defineMov() {
+        stateTimer = 0;
+        actualState = State.STANDING;
+        prevState = State.STANDING;
+
         centerMass = this.body.getWorldCenter();
         impulseUp = new Vector2(0, 4f);
         impulseRight = new Vector2(0.1f, 0);
         impulseLeft = new Vector2(-0.1f, 0);
     }
 
-    private void defineMario() {
+    private void defineMarioBody() {
         BodyDef bodyDef = new BodyDef();
-
         bodyDef.position.set(32 / MarioBros.PPM, 32 / MarioBros.PPM);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
@@ -74,12 +97,39 @@ public class Player extends Sprite {
 
     }
 
-    public void update() {
+    public void update(float dt) {
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+
+        setRegion(getFrame(dt));
     }
 
-    public Body getBody() {
-        return body;
+
+    private TextureRegion getFrame(float dt) {
+        actualState = getActualState();
+
+        TextureRegion region;
+        switch (actualState) {
+            case JUMPING:
+                region = marioJump;
+                break;
+            case RUNNING:
+                region = marioRun.getKeyFrame(stateTimer, true);
+                break;
+            case FALLING:
+            case STANDING:
+            default:
+                region = marioNoMove;
+                break;
+        }
+
+
+        stateTimer = actualState == prevState ? stateTimer + dt : 0;
+        prevState = actualState;
+        return region;
+    }
+
+    private TextureAtlas.AtlasRegion createRegion(MainScreen screen, String name) {
+        return screen.getTextureAtlas().findRegion(name);
     }
 
 
@@ -87,6 +137,7 @@ public class Player extends Sprite {
         if (getActualState() == State.STANDING)
             body.applyLinearImpulse(impulseUp, centerMass, true);
     }
+
 
     public void moveRight() {
         if (body.getLinearVelocity().x <= 1.7)
@@ -100,10 +151,17 @@ public class Player extends Sprite {
     }
 
     private State getActualState() {
-        if (body.getLinearVelocity().y > 0 || body.getLinearVelocity().y < 0) {
+        if (body.getLinearVelocity().y > 0) {
             return State.JUMPING;
+        } else if (body.getLinearVelocity().x != 0) {
+            return State.RUNNING;
         } else {
             return State.STANDING;
         }
+    }
+
+
+    public Body getBody() {
+        return body;
     }
 }

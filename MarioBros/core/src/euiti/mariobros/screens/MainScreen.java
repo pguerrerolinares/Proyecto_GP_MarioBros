@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -19,7 +20,7 @@ import euiti.mariobros.system.MarioBros;
 import euiti.mariobros.entities.Player;
 
 public class MainScreen implements Screen {
-
+    private TiledMap map;
     private MarioBros gameMain;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
@@ -37,7 +38,7 @@ public class MainScreen implements Screen {
 
 
     // Sprites
-    private TextureAtlas textureAtlas = new TextureAtlas("MarioPacker.atlas");
+    private TextureAtlas textureAtlas = new TextureAtlas("MarioAssets.atlas");
 
 
     public MainScreen(MarioBros game) {
@@ -56,7 +57,8 @@ public class MainScreen implements Screen {
 
         // backgroup - mapa
         TmxMapLoader mapLoader = new TmxMapLoader();
-        TiledMap map = mapLoader.load("marioMap.tmx");
+
+        map = mapLoader.load("marioMap.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / PPM);
 
 
@@ -67,10 +69,10 @@ public class MainScreen implements Screen {
         world = new World(MarioBros.GRAVITY, true);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-        new CollisionWorld(world, map);
+        new CollisionWorld(this);
 
 
-        mario = new Player(world, this);
+        mario = new Player(this);
         mario.setPosition(mario.getBody().getPosition().x - mario.getWidth() / 2, mario.getBody().getPosition().y - mario.getHeight() / 2);
 
 
@@ -122,13 +124,14 @@ public class MainScreen implements Screen {
 
         world.step(1 / 60f, 6, 2);
 
-        mario.update();
+        mario.update(dt);
 
         gameCam.position.x = mario.getBody().getPosition().x;
 
         gameCam.update();
         renderer.setView(gameCam);
     }
+
 
     private void handleInput() {
 
@@ -167,6 +170,18 @@ public class MainScreen implements Screen {
 
     @Override
     public void dispose() {
+        map.dispose();
+        world.dispose();
+        renderer.dispose();
+        box2DDebugRenderer.dispose();
+        layoutScreen.dispose();
+    }
 
+    public World getWorld() {
+        return this.world;
+    }
+
+    public TiledMap getMap() {
+        return this.map;
     }
 }
