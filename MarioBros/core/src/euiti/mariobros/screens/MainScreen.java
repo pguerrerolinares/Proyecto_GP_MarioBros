@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -15,9 +14,10 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import euiti.mariobros.CollisionWorld;
+import utils.CollisionWorld;
 import euiti.mariobros.system.MarioBros;
 import euiti.mariobros.entities.Player;
+import utils.WorldContact;
 
 public class MainScreen implements Screen {
     private TiledMap map;
@@ -70,6 +70,7 @@ public class MainScreen implements Screen {
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         new CollisionWorld(this);
+        world.setContactListener(new WorldContact());
 
 
         mario = new Player(this);
@@ -135,7 +136,7 @@ public class MainScreen implements Screen {
 
     private void handleInput() {
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             mario.jump();
 
         }

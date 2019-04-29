@@ -47,13 +47,8 @@ public class Player extends Sprite {
         defineMov();
 
         Array<TextureRegion> walkAnimation = new Array<TextureRegion>();
-        //walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right1"), 108, 0, 16, 32));
-        walkAnimation.add(new TextureRegion(createRegion(screen, "jump_right"), 0, 0, 16, 32));
-        walkAnimation.add(new TextureRegion(createRegion(screen, "jump_right"), 39, 2, 16, 32));
-
-        // walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right1"), 261, 2, 35, 60));
-        //walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right2"), 76, 2, 35, 60));
-        //walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right2"), 76, 2, 35, 60));
+        walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right1"), 0, 0, 16, 32));
+        walkAnimation.add(new TextureRegion(createRegion(screen, "walk_right2"), 0, 0, 16, 32));
 
         marioRun = new Animation<TextureRegion>(0.1f, walkAnimation);
 
@@ -67,9 +62,8 @@ public class Player extends Sprite {
         setRegion(marioNoMove);
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(marioNoMove, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+    public void draw(Batch batch) {
+        super.draw(batch);
     }
 
     private void defineMov() {
@@ -84,6 +78,8 @@ public class Player extends Sprite {
     }
 
     private void defineMarioBody() {
+
+        int radio = 10;
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(32 / MarioBros.PPM, 32 / MarioBros.PPM);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -91,10 +87,26 @@ public class Player extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(10 / MarioBros.PPM);
+        shape.setRadius(radio / MarioBros.PPM);
+        fixtureDef.filter.categoryBits = MarioBros.MARIO_BIT;
+        fixtureDef.filter.maskBits = MarioBros.GROUND_BIT |
+                MarioBros.COIN_BIT |
+                MarioBros.BRICK_BIT |
+                MarioBros.ENEMY_BIT |
+                MarioBros.OBJECT_BIT |
+                MarioBros.ENEMY_HEAD_BIT |
+                MarioBros.ITEM_BIT;
+
         fixtureDef.shape = shape;
         body.createFixture(fixtureDef).setUserData(this);
 
+        EdgeShape head = new EdgeShape();
+        head.set(new Vector2(-4 / MarioBros.PPM, radio / MarioBros.PPM), new Vector2(4 / MarioBros.PPM, radio / MarioBros.PPM));
+        fixtureDef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
+        fixtureDef.shape = head;
+        fixtureDef.isSensor = true;
+
+        body.createFixture(fixtureDef).setUserData(this);
     }
 
     public void update(float dt) {
@@ -106,7 +118,7 @@ public class Player extends Sprite {
 
     private TextureRegion getFrame(float dt) {
         actualState = getActualState();
-
+        stateTimer += dt;
         TextureRegion region;
         switch (actualState) {
             case JUMPING:
@@ -122,8 +134,14 @@ public class Player extends Sprite {
                 break;
         }
 
+        if ((body.getLinearVelocity().x < 0 || !movDirection) && !region.isFlipX()) {
+            region.flip(true, false);
+            movDirection = false;
+        } else if ((body.getLinearVelocity().x > 0 || movDirection) && region.isFlipX()) {
+            region.flip(true, false);
+            movDirection = true;
+        }
 
-        stateTimer = actualState == prevState ? stateTimer + dt : 0;
         prevState = actualState;
         return region;
     }
@@ -153,8 +171,14 @@ public class Player extends Sprite {
     private State getActualState() {
         if (body.getLinearVelocity().y > 0) {
             return State.JUMPING;
+        } else if ((body.getLinearVelocity().y > 0 && actualState == State.JUMPING) ||
+                (body.getLinearVelocity().y < 0 && prevState == State.JUMPING)) {
+            return State.JUMPING;
+        } else if (body.getLinearVelocity().y < 0) {
+            return State.FALLING;
         } else if (body.getLinearVelocity().x != 0) {
             return State.RUNNING;
+
         } else {
             return State.STANDING;
         }

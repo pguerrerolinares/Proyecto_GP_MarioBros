@@ -1,10 +1,11 @@
-package euiti.mariobros;
+package utils;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import euiti.mariobros.entities.mapObjects.Brick;
 import euiti.mariobros.screens.MainScreen;
 import euiti.mariobros.system.MarioBros;
 

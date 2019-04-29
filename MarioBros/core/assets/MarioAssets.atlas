@@ -6,13 +6,6 @@ filter: Nearest,Nearest
 repeat: none
 jump_left
   rotate: false
-  xy: -18, 0
-  size: 16, 32
-  orig: 16, 32
-  offset: 0, 0
-  index: -1
-jump_right
-  rotate: false
   xy: 0, 0
   size: 16, 32
   orig: 16, 32
@@ -25,35 +18,42 @@ jump_right
   orig: 16, 32
   offset: 0, 0
   index: -1
-still_right
+still_left
   rotate: false
   xy: 36, 0
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
-walk_left1
+still_right
   rotate: false
   xy: 54, 0
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
-walk_left2
+walk_left1
   rotate: false
   xy: 72, 0
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
-walk_right1
+walk_left2
   rotate: false
   xy: 90, 0
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
-still_right
+walk_right1
+  rotate: false
+  xy: 108, 0
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+walk_right2
   rotate: false
   xy: 126, 0
   size: 16, 32
