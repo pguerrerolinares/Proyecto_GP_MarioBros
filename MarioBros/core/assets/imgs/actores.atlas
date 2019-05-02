@@ -1,0 +1,61 @@
+actores.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Nearest
+repeat: none
+GoombaDerecha
+  rotate: false
+  xy: 0, 322
+  size: 188, 27
+  orig: 193, 27
+  offset: 3, 0
+  index: -1
+Goombaizquierda
+  rotate: false
+  xy: 0, 295
+  size: 188, 27
+  orig: 193, 27
+  offset: 3, 0
+  index: -1
+Mariogrande
+  rotate: false
+  xy: 0, 369
+  size: 353, 34
+  orig: 358, 34
+  offset: 3, 0
+  index: -1
+Mariopequeno
+  rotate: false
+  xy: 0, 349
+  size: 263, 20
+  orig: 266, 20
+  offset: 1, 0
+  index: -1
+Monedas
+  rotate: false
+  xy: 263, 353
+  size: 51, 16
+  orig: 55, 16
+  offset: 2, 0
+  index: -1
+bandera
+  rotate: false
+  xy: 188, 328
+  size: 18, 21
+  orig: 19, 21
+  offset: 0, 0
+  index: -1
+goombas
+  rotate: false
+  xy: 353, 383
+  size: 50, 20
+  orig: 50, 20
+  offset: 0, 0
+  index: -1
+seta
+  rotate: false
+  xy: 0, 277
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
