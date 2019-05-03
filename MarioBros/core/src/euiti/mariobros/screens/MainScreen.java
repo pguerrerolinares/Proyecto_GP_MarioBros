@@ -14,14 +14,20 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import euiti.mariobros.entities.mapObjects.Flag;
 import euiti.mariobros.entities.Player;
 import euiti.mariobros.entities.enemies.Enemy;
 import euiti.mariobros.entities.items.Item;
 import euiti.mariobros.entities.items.Mushroom;
 import euiti.mariobros.entities.items.SpawningItem;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import euiti.mariobros.entities.mapObjects.MapTileObject;
 import euiti.mariobros.system.MarioBros;
 import euiti.mariobros.utils.WorldCollision;
@@ -69,7 +75,10 @@ public class MainScreen implements Screen {
 
     private float countDown;
 
+    private Stage levelCompletedStage;
     private boolean levelCompleted = false;
+    private boolean flagpoleMusicPlay = false;
+    private boolean levelCompletedMusicPlay = false;
 
     public MainScreen(MarioBros gameMain) {
         this.gameMain = gameMain;
@@ -124,6 +133,24 @@ public class MainScreen implements Screen {
         countDown = 3.0f;
 
         playMusic = true;
+
+
+        Flag flag = new Flag(this, (worldCollision.getFlagPosition().x - 9) / MarioBros.PPM, worldCollision.getFlagPosition().y / MarioBros.PPM);
+        MoveToAction flagSlide = new MoveToAction();
+        flagSlide.setPosition((worldCollision.getFlagPosition().x - 9) / MarioBros.PPM, 3);
+        flagSlide.setDuration(1.0f);
+        flag.addAction(flagSlide);
+        levelCompletedStage = new Stage(viewport, gameMain.batch);
+        levelCompletedStage.addActor(flag);
+        RunnableAction setLevelCompletedScreen = new RunnableAction();
+        setLevelCompletedScreen.setRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gameMain.setScreen(new GameOverScreen(gameMain));
+                dispose();
+            }
+        });
+        levelCompletedStage.addAction(new SequenceAction(new DelayAction(8.0f), setLevelCompletedScreen));
 
     }
 
@@ -186,7 +213,15 @@ public class MainScreen implements Screen {
         if (player.isDead()) {
             MarioBros.stopMusic();
         } else if (levelCompleted) {
-            // musica final
+            if (!flagpoleMusicPlay) {
+                MarioBros.playMusic("flagpole.wav", false);
+                flagpoleMusicPlay = true;
+            } else if (!MarioBros.isPlayingMusic("flagpole.wav")) {
+                if (!levelCompletedMusicPlay) {
+                    MarioBros.playMusic("flagpole.wav", false);
+                    levelCompletedMusicPlay = true;
+                }
+            }
         } else {
             MarioBros.playMusic("main_loop.ogg");
         }
@@ -263,6 +298,12 @@ public class MainScreen implements Screen {
                 dispose();
             }
         }
+
+
+        // update levelCompletedStage
+        if (levelCompleted) {
+            levelCompletedStage.act(delta);
+        }
     }
 
     private void cleanUpDestroyedObjects() {
@@ -307,6 +348,7 @@ public class MainScreen implements Screen {
             enemy.draw(gameMain.batch);
         }
 
+
         // draw Player
         player.draw(gameMain.batch);
 
@@ -319,6 +361,9 @@ public class MainScreen implements Screen {
         if (renderB2DDebug) {
             box2DDebugRenderer.render(world, camera.combined);
         }
+
+        // draw levelCompletedStage
+        levelCompletedStage.draw();
 
         update(delta);
 
@@ -351,5 +396,14 @@ public class MainScreen implements Screen {
         world.dispose();
         textureAtlas.dispose();
         box2DDebugRenderer.dispose();
+        levelCompletedStage.dispose();
+    }
+
+
+    public void levelCompleted() {
+        if (levelCompleted) {
+            return;
+        }
+        levelCompleted = true;
     }
 }

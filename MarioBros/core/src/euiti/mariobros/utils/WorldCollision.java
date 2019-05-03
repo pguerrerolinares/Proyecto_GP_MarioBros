@@ -43,7 +43,7 @@ public class WorldCollision {
                 float x = ((TiledMapTileMapObject) mapObject).getX();
                 float y = ((TiledMapTileMapObject) mapObject).getY();
 
-                mapTileObjects.add(new Pipe(mainScreen, (x + 8) / MarioBros.PPM, (y + 8) / MarioBros.PPM, (TiledMapTileMapObject) mapObject));
+                mapTileObjects.add(new MetalBlock(mainScreen, (x + 8) / MarioBros.PPM, (y + 8) / MarioBros.PPM, (TiledMapTileMapObject) mapObject));
             }
         }
 
@@ -88,7 +88,16 @@ public class WorldCollision {
         }
 
 
-        startPosition = new Vector2(64.0f, 64.0f);
+        mapLayer = tiledMap.getLayers().get("start");
+        if (mapLayer != null) {
+            if (mapLayer.getObjects().getCount() > 0) {
+                float x = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getX();
+                float y = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getY();
+
+                startPosition = new Vector2(x, y);
+            }
+        }
+
 
         mapLayer = tiledMap.getLayers().get("start");
         if (mapLayer != null) {
@@ -97,6 +106,27 @@ public class WorldCollision {
                 float y = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getY();
 
                 startPosition = new Vector2(x, y);
+            }
+        }
+
+        mapLayer = tiledMap.getLayers().get("stick");
+        if (mapLayer != null) {
+            for (MapObject mapObject : mapLayer.getObjects()) {
+                float x = ((TiledMapTileMapObject) mapObject).getX();
+                float y = ((TiledMapTileMapObject) mapObject).getY();
+
+                mapTileObjects.add(new Stick(mainScreen, (x + 8) / MarioBros.PPM, (y + 8) / MarioBros.PPM, (TiledMapTileMapObject) mapObject));
+            }
+        }
+
+
+        mapLayer = tiledMap.getLayers().get("flag");
+        if (mapLayer != null) {
+            if (mapLayer.getObjects().getCount() > 0) {
+                float x = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getX();
+                float y = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getY();
+
+                flagPosition = new Vector2(x, y);
             }
         }
 
@@ -113,5 +143,9 @@ public class WorldCollision {
 
     public Array<Enemy> getEnemies() {
         return enemies;
+    }
+
+    public Vector2 getFlagPosition() {
+        return flagPosition;
     }
 }

@@ -113,7 +113,7 @@ public class MarioBros extends Game {
         playMusic(filename, true);
     }
 
-    private static void playMusic(String filename, boolean loop) {
+    public static void playMusic(String filename, boolean loop) {
         if (!currentMusic.equals(filename)) {
             stopMusic();
             currentMusic = filename;
@@ -150,7 +150,7 @@ public class MarioBros extends Game {
         }
     }
 
-    private static boolean isPlayingMusic(String filename) {
+    public static boolean isPlayingMusic(String filename) {
         return assetManager.get(musicPath + filename, Music.class).isPlaying();
     }
 

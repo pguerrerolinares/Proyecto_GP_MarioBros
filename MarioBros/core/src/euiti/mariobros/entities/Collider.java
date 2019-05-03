@@ -12,7 +12,7 @@ public class Collider {
         this.fixture = fixture;
     }
 
-    RigidBody getUserData() {
+    public RigidBody getUserData() {
         return (RigidBody) fixture.getUserData();
     }
 

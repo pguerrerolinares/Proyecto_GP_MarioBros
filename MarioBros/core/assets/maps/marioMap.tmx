@@ -618,7 +618,7 @@
   <object id="501" gid="265" x="2576" y="192" width="16" height="16"/>
   <object id="502" gid="298" x="2576" y="208" width="16" height="16"/>
  </objectgroup>
- <objectgroup id="8" name="flag_pole">
+ <objectgroup id="8" name="stick">
   <object id="592" gid="281" x="3136" y="48" width="16" height="16"/>
   <object id="593" gid="314" x="3136" y="64" width="16" height="16"/>
   <object id="594" gid="314" x="3136" y="80" width="16" height="16"/>

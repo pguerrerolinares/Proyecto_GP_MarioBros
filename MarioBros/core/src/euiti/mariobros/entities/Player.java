@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -14,9 +15,13 @@ import euiti.mariobros.entities.enemies.Enemy;
 import euiti.mariobros.entities.items.Item;
 import euiti.mariobros.screens.MainScreen;
 import euiti.mariobros.system.MarioBros;
+import javafx.stage.Stage;
 
 
 public class Player extends RigidBody {
+    private boolean climb;
+
+
     public enum State {
         STANDING,
         RUNNING,
@@ -25,6 +30,8 @@ public class Player extends RigidBody {
         GROWING,
         SHRINKING,
         DYING,
+        CLIMBING
+
     }
 
     private final float radius = 7 / MarioBros.PPM;
@@ -36,15 +43,15 @@ public class Player extends RigidBody {
 
     private TextureRegion standingSmall;
     private TextureRegion jumpingSmall;
-    private Animation runningSmall;
+    private Animation<TextureRegion> runningSmall;
 
     private TextureRegion standingBig;
     private TextureRegion jumpingBig;
-    private Animation runningBig;
+    private Animation<TextureRegion> runningBig;
 
     private TextureRegion dying;
-    private Animation growing;
-    private Animation shrinking;
+    private Animation<TextureRegion> growing;
+    private Animation<TextureRegion> shrinking;
 
 
     private boolean facingRight;
@@ -82,12 +89,12 @@ public class Player extends RigidBody {
         Array<TextureRegion> keyFrames = new Array<TextureRegion>();
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 14, 0, 12, 19));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 14 * 2, 0, 14, 19));
-        runningSmall = new Animation(0.2f, keyFrames);
+        runningSmall = new Animation<TextureRegion>(0.2f, keyFrames);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 16, 0, 16, 33));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), (16 * 2) + 2, 0, 16, 33));
-        runningBig = new Animation(0.2f, keyFrames);
+        runningBig = new Animation<TextureRegion>(0.2f, keyFrames);
         keyFrames.clear();
 
 
@@ -97,7 +104,7 @@ public class Player extends RigidBody {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 285, 0, 14, 33));
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 0, 0, 14, 33));
         }
-        growing = new Animation(0.09f, keyFrames);
+        growing = new Animation<TextureRegion>(0.09f, keyFrames);
 
         keyFrames.clear();
 
@@ -106,7 +113,7 @@ public class Player extends RigidBody {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 0, 0, 14, 33));
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 285, 0, 14, 33));
         }
-        shrinking = new Animation(0.1f, keyFrames);
+        shrinking = new Animation<TextureRegion>(0.1f, keyFrames);
 
         dying = new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 160, 0, 16, 19);
 
@@ -255,8 +262,14 @@ public class Player extends RigidBody {
 
     private void handleLevelCompleted() {
 
-        // hacer shit al final del nivel
-
+        if (climb) {
+            facingRight = true;
+            body.setTransform(196.0f, body.getPosition().y, 0);
+            body.setLinearVelocity(new Vector2(0, -9f));
+        } else {
+            if (getX() < 201.0f)
+                body.applyLinearImpulse(new Vector2(body.getMass() * (4.0f - body.getLinearVelocity().x), 0f), body.getWorldCenter(), true);
+        }
     }
 
     private void checkGrounded() {
@@ -341,6 +354,8 @@ public class Player extends RigidBody {
             } else {
                 currentState = State.FALLING;
             }
+        } else if (climb) {
+            currentState = State.CLIMBING;
         } else {
             if (currentState == State.JUMPING) {
                 jump = false;
@@ -364,7 +379,7 @@ public class Player extends RigidBody {
                 break;
 
             case SHRINKING:
-                setRegion((TextureRegion) shrinking.getKeyFrame(stateTime, false));
+                setRegion(shrinking.getKeyFrame(stateTime, false));
                 // temporarily not collide with enemies
                 for (Fixture fixture : body.getFixtureList()) {
                     Filter filter = fixture.getFilterData();
@@ -380,7 +395,7 @@ public class Player extends RigidBody {
                 break;
 
             case GROWING:
-                setRegion((TextureRegion) growing.getKeyFrame(stateTime, false));
+                setRegion(growing.getKeyFrame(stateTime, false));
                 if (growing.isAnimationFinished(stateTime)) {
                     growUp = false;
                     defineBigMario();
@@ -388,9 +403,9 @@ public class Player extends RigidBody {
                 break;
             case RUNNING:
                 if (isGrownUp) {
-                    setRegion((TextureRegion) runningBig.getKeyFrame(stateTime, true));
+                    setRegion(runningBig.getKeyFrame(stateTime, true));
                 } else {
-                    setRegion((TextureRegion) runningSmall.getKeyFrame(stateTime, true));
+                    setRegion(runningSmall.getKeyFrame(stateTime, true));
                 }
                 break;
             case JUMPING:
@@ -401,6 +416,17 @@ public class Player extends RigidBody {
                     setRegion(jumpingSmall);
                 }
                 break;
+            case CLIMBING:
+                if (isGrownUp) {
+                    // cambiar por nueva animación
+                    setRegion(jumpingBig);
+                } else {
+                    setRegion(jumpingSmall);
+                }
+
+                if (stateTime > 1.0f) {
+                    climb = false;
+                }
             case FALLING:
             case STANDING:
             default:
@@ -463,6 +489,18 @@ public class Player extends RigidBody {
             }
 
         }
+    }
+
+    public void levelCompleted() {
+        if (isLevelCompleted) {
+            return;
+        }
+
+        isLevelCompleted = true;
+        climb = true;
+
+        int point = (int) MathUtils.clamp(getY(), 2.0f, 10.0f) * 100;
+        MarioBros.addScore(point);
     }
 
 }
