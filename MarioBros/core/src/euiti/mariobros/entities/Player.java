@@ -15,7 +15,7 @@ import euiti.mariobros.entities.enemies.Enemy;
 import euiti.mariobros.entities.items.Item;
 import euiti.mariobros.screens.MainScreen;
 import euiti.mariobros.system.MarioBros;
-import javafx.stage.Stage;
+//import javafx.stage.Stage;
 
 
 public class Player extends RigidBody {

@@ -202,6 +202,11 @@ public class MainScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             renderB2DDebug = !renderB2DDebug;
         }
+        
+        //Ayuda
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
+        	layoutScreen.help();
+        }
 
     }
 
