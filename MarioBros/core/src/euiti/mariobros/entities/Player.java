@@ -19,7 +19,12 @@ import euiti.mariobros.system.MarioBros;
 
 
 public class Player extends RigidBody {
-    private boolean climb;
+    private Animation<TextureRegion> winningSmall;
+    private Animation<TextureRegion> winningBig;
+    private final TextureRegion sladingBig;
+    private TextureRegion sladingSmall;
+    private boolean slide;
+    private boolean winner;
 
 
     public enum State {
@@ -30,8 +35,8 @@ public class Player extends RigidBody {
         GROWING,
         SHRINKING,
         DYING,
-        CLIMBING
-
+        SLIDING,
+        WINNING
     }
 
     private final float radius = 7 / MarioBros.PPM;
@@ -114,8 +119,29 @@ public class Player extends RigidBody {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 285, 0, 14, 33));
         }
         shrinking = new Animation<TextureRegion>(0.1f, keyFrames);
+        keyFrames.clear();
 
         dying = new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 160, 0, 16, 19);
+
+        // ganá
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 178, 0, 16, 19));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 196, 0, 14, 19));
+        winningSmall = new Animation<TextureRegion>(0.2f, keyFrames);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 319, 0, 15, 33));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 301, 0, 16, 32));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 337, 0, 15, 33));
+        winningBig = new Animation<TextureRegion>(0.2f, keyFrames);
+        keyFrames.clear();
+
+
+        // queda raro
+        sladingSmall = new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 79, 0, 14, 19);
+        sladingBig = new TextureRegion(textureAtlas.findRegion("Mariogrande"), 189, 0, 14, 29);
+
+        keyFrames.clear();
+
 
         setRegion(standingSmall);
         setBounds(getX(), getY(), 14 / MarioBros.PPM, 16 / MarioBros.PPM);
@@ -262,7 +288,7 @@ public class Player extends RigidBody {
 
     private void handleLevelCompleted() {
 
-        if (climb) {
+        if (slide) {
             facingRight = true;
             body.setTransform(196.0f, body.getPosition().y, 0);
             body.setLinearVelocity(new Vector2(0, -9f));
@@ -354,8 +380,10 @@ public class Player extends RigidBody {
             } else {
                 currentState = State.FALLING;
             }
-        } else if (climb) {
-            currentState = State.CLIMBING;
+        } else if (slide) {
+            currentState = State.SLIDING;
+        } else if (winner) {
+            currentState = State.WINNING;
         } else {
             if (currentState == State.JUMPING) {
                 jump = false;
@@ -416,17 +444,22 @@ public class Player extends RigidBody {
                     setRegion(jumpingSmall);
                 }
                 break;
-            case CLIMBING:
-                if (isGrownUp) {
-                    // cambiar por nueva animación
-                    setRegion(jumpingBig);
-                } else {
-                    setRegion(jumpingSmall);
-                }
+            case SLIDING:
 
                 if (stateTime > 1.0f) {
-                    climb = false;
+                    slide = false;
                 }
+
+                break;
+            case WINNING:
+                if (stateTime > 0.4f) {
+                    if (isGrownUp) {
+                        setRegion(winningBig.getKeyFrame(stateTime, true));
+                    } else {
+                        setRegion(winningSmall.getKeyFrame(stateTime, true));
+                    }
+                }
+                break;
             case FALLING:
             case STANDING:
             default:
@@ -497,10 +530,13 @@ public class Player extends RigidBody {
         }
 
         isLevelCompleted = true;
-        climb = true;
+        slide = true;
 
         int point = (int) MathUtils.clamp(getY(), 2.0f, 10.0f) * 100;
         MarioBros.addScore(point);
+
+        winner = true;
+
     }
 
 }

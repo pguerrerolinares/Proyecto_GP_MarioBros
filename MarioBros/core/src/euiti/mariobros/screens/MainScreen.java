@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import euiti.mariobros.entities.items.Coin;
 import euiti.mariobros.entities.mapObjects.Flag;
 import euiti.mariobros.entities.Player;
 import euiti.mariobros.entities.enemies.Enemy;
@@ -114,7 +115,7 @@ public class MainScreen implements Screen {
         WorldCollision worldCollision = new WorldCollision(this, tiledMap);
         mapTileObjects = worldCollision.getMapTileObject();
         enemies = worldCollision.getEnemies();
-        player = new Player(this, (worldCollision.getStartPosition().x + 8) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
+        player = new Player(this, (worldCollision.getStartPosition().x + 3000) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
 
 
         // for spawning item
@@ -181,6 +182,9 @@ public class MainScreen implements Screen {
 
             if (spawningItem.type == Mushroom.class) {
                 items.add(new Mushroom(this, spawningItem.x, spawningItem.y));
+            } else if (spawningItem.type == Coin.class) {
+                items.add(new Coin(this, spawningItem.x, spawningItem.y));
+
             }
 
         }
@@ -202,10 +206,10 @@ public class MainScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             renderB2DDebug = !renderB2DDebug;
         }
-        
+
         //Ayuda
         if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
-        	layoutScreen.help();
+            layoutScreen.help();
         }
 
     }

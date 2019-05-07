@@ -99,16 +99,6 @@ public class WorldCollision {
         }
 
 
-        mapLayer = tiledMap.getLayers().get("start");
-        if (mapLayer != null) {
-            if (mapLayer.getObjects().getCount() > 0) {
-                float x = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getX();
-                float y = ((TiledMapTileMapObject) mapLayer.getObjects().get(0)).getY();
-
-                startPosition = new Vector2(x, y);
-            }
-        }
-
         mapLayer = tiledMap.getLayers().get("stick");
         if (mapLayer != null) {
             for (MapObject mapObject : mapLayer.getObjects()) {

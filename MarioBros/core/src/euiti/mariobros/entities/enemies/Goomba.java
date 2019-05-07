@@ -142,7 +142,7 @@ public class Goomba extends Enemy {
 
         switch (currentState) {
             case STOMPED:
-                setRegion(new TextureRegion(textureAtlas.findRegion("goombas"), 16 * 2, 0, 16, 16));
+                setRegion(new TextureRegion(textureAtlas.findRegion("goombas"), 33, 0, 15, 17));
                 if (stateTime > 1.0f) {
                     queueDestroy();
                 }

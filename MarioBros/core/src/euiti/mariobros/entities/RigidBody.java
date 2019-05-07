@@ -37,7 +37,7 @@ public abstract class RigidBody extends Sprite {
 
     }
 
-    public void queueDestroy() {
+    protected void queueDestroy() {
         toBeDestroyed = true;
     }
 

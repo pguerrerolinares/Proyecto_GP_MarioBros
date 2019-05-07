@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.utils.Array;
 import euiti.mariobros.entities.Collider;
 import euiti.mariobros.entities.enemies.Enemy;
+import euiti.mariobros.entities.items.Coin;
 import euiti.mariobros.entities.items.Mushroom;
 import euiti.mariobros.screens.MainScreen;
 import euiti.mariobros.system.MarioBros;
@@ -114,7 +115,6 @@ public class CoinBlock extends MapTileObject {
         if (other.getFilter().categoryBits == MarioBros.MARIO_HEAD_BIT) {
             if (hitable) {
 
-                MarioBros.addScore(100);
                 hitable = false;
                 hit = true;
                 lethal = true;
@@ -126,6 +126,8 @@ public class CoinBlock extends MapTileObject {
 
                     MarioBros.getAssetManager().get("sound/item.wav", Sound.class).play();
                 } else {
+                    MarioBros.addScore(100);
+                    mainScreen.addSpawnItem(body.getPosition().x, body.getPosition().y + 16 / MarioBros.PPM, Coin.class);
                     MarioBros.getAssetManager().get("sound/coin.wav", Sound.class).play();
 
                 }
