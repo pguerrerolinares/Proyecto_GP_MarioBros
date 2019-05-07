@@ -187,6 +187,7 @@ public class LayoutScreen implements Disposable {
         stage.addActor(helpTable);
     }
 
+
     @Override
     public void dispose() {
         stage.dispose();
