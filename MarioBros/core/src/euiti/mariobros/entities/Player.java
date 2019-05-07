@@ -3,6 +3,7 @@ package euiti.mariobros.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -73,7 +74,7 @@ public class Player extends RigidBody {
 
 
     private boolean smallJump = false;
-    private boolean bigJump = false;
+
     private float jumpSoundTimer = 0f;
 
 
@@ -91,15 +92,15 @@ public class Player extends RigidBody {
 
 
         // corré
-        Array<TextureRegion> keyFrames = new Array<TextureRegion>();
+        Array<TextureRegion> keyFrames = new Array<>();
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 14, 0, 12, 19));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 14 * 2, 0, 14, 19));
-        runningSmall = new Animation<TextureRegion>(0.2f, keyFrames);
+        runningSmall = new Animation<>(0.15f, keyFrames);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 16, 0, 16, 33));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), (16 * 2) + 2, 0, 16, 33));
-        runningBig = new Animation<TextureRegion>(0.2f, keyFrames);
+        runningBig = new Animation<>(0.15f, keyFrames);
         keyFrames.clear();
 
 
@@ -109,7 +110,7 @@ public class Player extends RigidBody {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 285, 0, 14, 33));
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 0, 0, 14, 33));
         }
-        growing = new Animation<TextureRegion>(0.09f, keyFrames);
+        growing = new Animation<>(0.09f, keyFrames);
 
         keyFrames.clear();
 
@@ -118,7 +119,7 @@ public class Player extends RigidBody {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 0, 0, 14, 33));
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 285, 0, 14, 33));
         }
-        shrinking = new Animation<TextureRegion>(0.1f, keyFrames);
+        shrinking = new Animation<>(0.1f, keyFrames);
         keyFrames.clear();
 
         dying = new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 160, 0, 16, 19);
@@ -126,13 +127,13 @@ public class Player extends RigidBody {
         // ganá
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 178, 0, 16, 19));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 196, 0, 14, 19));
-        winningSmall = new Animation<TextureRegion>(0.2f, keyFrames);
+        winningSmall = new Animation<>(0.2f, keyFrames);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 319, 0, 15, 33));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 301, 0, 16, 32));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 337, 0, 15, 33));
-        winningBig = new Animation<TextureRegion>(0.2f, keyFrames);
+        winningBig = new Animation<>(0.2f, keyFrames);
         keyFrames.clear();
 
 
@@ -251,14 +252,8 @@ public class Player extends RigidBody {
         }
 
         if (smallJump && jumpSoundTimer > 0.15f) {
-            if (bigJump) {
-                // assetManager.get("sound/bigjump.wav", Sound.class).play();
-
-            } else {
-                // assetManager.get("sound/bigjump.wav", Sound.class).play();
-            }
+            assetManager.get("sound/Jump.ogg", Sound.class).play();
             smallJump = false;
-            bigJump = false;
         }
 
 
@@ -348,6 +343,7 @@ public class Player extends RigidBody {
         State previousState = currentState;
 
         if (die) {
+
             if (!isDead) {
                 assetManager.get("sound/die.wav", Sound.class).play();
                 body.applyLinearImpulse(new Vector2(0.0f, body.getMass() * (12f - body.getLinearVelocity().y)), body.getWorldCenter(), true);
@@ -518,6 +514,9 @@ public class Player extends RigidBody {
                 if (!isGrownUp) {
                     assetManager.get("sound/power_up.wav", Sound.class).play();
                     growUp = true;
+                } else {
+                    assetManager.get("sound/1up.wav", Sound.class).play();
+                    MarioBros.addLife();
                 }
             }
 

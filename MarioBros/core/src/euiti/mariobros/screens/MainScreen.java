@@ -115,12 +115,12 @@ public class MainScreen implements Screen {
         WorldCollision worldCollision = new WorldCollision(this, tiledMap);
         mapTileObjects = worldCollision.getMapTileObject();
         enemies = worldCollision.getEnemies();
-        player = new Player(this, (worldCollision.getStartPosition().x + 3000) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
+        player = new Player(this, (worldCollision.getStartPosition().x + 8) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
 
 
         // for spawning item
-        items = new Array<Item>();
-        itemSpawnQueue = new LinkedList<SpawningItem>();
+        items = new Array<>();
+        itemSpawnQueue = new LinkedList<>();
 
 
         accumulator = 0;
@@ -147,6 +147,7 @@ public class MainScreen implements Screen {
         setLevelCompletedScreen.setRunnable(new Runnable() {
             @Override
             public void run() {
+                MarioBros.gameOver();
                 gameMain.setScreen(new GameOverScreen(gameMain));
                 dispose();
             }
@@ -299,12 +300,21 @@ public class MainScreen implements Screen {
 
         // check if Player is dead y cambiar pantalla
         if (player.isDead()) {
+
             countDown -= delta;
 
             if (countDown < 0) {
-                MarioBros.gameOver();
-                gameMain.setScreen(new GameOverScreen(gameMain));
-                dispose();
+                MarioBros.removeLife();
+                if (MarioBros.getLife() < 1) {
+                    System.out.println(MarioBros.getLife());
+                    MarioBros.gameOver();
+                    gameMain.setScreen(new GameOverScreen(gameMain));
+                    dispose();
+                } else {
+                    gameMain.setScreen(new MainScreen(gameMain));
+
+                }
+
             }
         }
 
@@ -312,6 +322,7 @@ public class MainScreen implements Screen {
         // update levelCompletedStage
         if (levelCompleted) {
             levelCompletedStage.act(delta);
+
         }
     }
 
@@ -414,5 +425,6 @@ public class MainScreen implements Screen {
             return;
         }
         levelCompleted = true;
+
     }
 }

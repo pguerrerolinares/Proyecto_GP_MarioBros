@@ -9,6 +9,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import euiti.mariobros.screens.MainScreen;
 
+import java.io.File;
+import java.io.IOException;
+
 public class MarioBros extends Game {
     public SpriteBatch batch;
 
@@ -43,15 +46,19 @@ public class MarioBros extends Game {
 
     public static float timeScale = 1;
 
+    private static int life;
+
 
     @Override
     public void create() {
+
         batch = new SpriteBatch();
 
         assetManager = new AssetManager();
 
         loadAudio();
 
+        life = 3;
         score = 0;
 
         setScreen(new MainScreen(this));
@@ -65,17 +72,15 @@ public class MarioBros extends Game {
 
     private void loadAudio() {
         assetManager.load("sound/main_loop.ogg", Music.class);
-        assetManager.load("sound/bigjump.wav", Music.class);
-        assetManager.load("sound/jump.wav", Music.class);
+        assetManager.load("sound/Jump.ogg", Sound.class);
         assetManager.load("sound/game_over.wav", Music.class);
         assetManager.load("sound/flagpole.wav", Music.class);
-        assetManager.load("sound/break.wav", Sound.class);
+        assetManager.load("sound/1up.wav", Sound.class);
         assetManager.load("sound/bump.wav", Sound.class);
         assetManager.load("sound/coin.wav", Sound.class);
         assetManager.load("sound/die.wav", Sound.class);
         assetManager.load("sound/power_up.wav", Sound.class);
         assetManager.load("sound/item.wav", Sound.class);
-
         assetManager.load("sound/thwomp.wav", Sound.class);
         assetManager.load("sound/kick.wav", Sound.class);
 
@@ -84,20 +89,34 @@ public class MarioBros extends Game {
 
 
     public static void gameOver() {
-        clearScore();
+        clear();
     }
 
     public static int getScore() {
         return score;
     }
 
-    private static void clearScore() {
+    private static void clear() {
         score = 0;
+        life = 3;
     }
 
     public static void addScore(int value) {
         score += value;
     }
+
+    public static void addLife() {
+        life++;
+    }
+
+    public static void removeLife() {
+        life--;
+    }
+
+    public static int getLife() {
+        return life;
+    }
+
 
     public static void setTimeScale(float value) {
         timeScale = MathUtils.clamp(value, 0.0f, 2.0f);
