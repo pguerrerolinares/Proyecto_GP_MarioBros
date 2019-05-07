@@ -150,9 +150,10 @@ public class MainScreen implements Screen {
         setLevelCompletedScreen.setRunnable(new Runnable() {
             @Override
             public void run() {
-                MarioBros.gameOver();
 
                 int score = MarioBros.getScore();
+                LinkedList<String> listPunt = new LinkedList<String>();
+
                 SGBD mydb = SGBD.getMiSGBD();
                 try {
                     mydb.insert(score);
@@ -160,7 +161,14 @@ public class MainScreen implements Screen {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                gameMain.setScreen(new GameOverScreen(gameMain));
+				try {
+					listPunt = mydb.readFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                MarioBros.gameOver();
+                gameMain.setScreen(new RankingScreen(gameMain, listPunt));
                 dispose();
             }
         });
