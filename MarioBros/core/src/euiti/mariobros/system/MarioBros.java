@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import euiti.mariobros.screens.MainScreen;
+import euiti.mariobros.utils.SGBD;
 
 public class MarioBros extends Game {
     public SpriteBatch batch;
@@ -46,6 +47,8 @@ public class MarioBros extends Game {
 
     @Override
     public void create() {
+    	SGBD mydb = SGBD.getMiSGBD();
+    	
         batch = new SpriteBatch();
 
         assetManager = new AssetManager();

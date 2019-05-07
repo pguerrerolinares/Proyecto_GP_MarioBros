@@ -31,9 +31,12 @@ import euiti.mariobros.entities.items.SpawningItem;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import euiti.mariobros.entities.mapObjects.MapTileObject;
 import euiti.mariobros.system.MarioBros;
+import euiti.mariobros.utils.SGBD;
 import euiti.mariobros.utils.WorldCollision;
 import euiti.mariobros.utils.WorldContactListener;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 
@@ -147,6 +150,14 @@ public class MainScreen implements Screen {
         setLevelCompletedScreen.setRunnable(new Runnable() {
             @Override
             public void run() {
+                int score  = MarioBros.getScore();
+                SGBD mydb = SGBD.getMiSGBD();
+                try {
+        			mydb.insert(score);
+        		} catch (IOException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}
                 gameMain.setScreen(new GameOverScreen(gameMain));
                 dispose();
             }
@@ -312,6 +323,7 @@ public class MainScreen implements Screen {
         // update levelCompletedStage
         if (levelCompleted) {
             levelCompletedStage.act(delta);
+            
         }
     }
 

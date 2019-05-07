@@ -1,110 +1,60 @@
 package euiti.mariobros.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.ObjectOutputStream.PutField;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class SGBD {
 	private static SGBD miSGBD;
+	private File f;
 
-    private SGBD() {
-        File f = new File("mario.db");
-        if (!f.exists()) {
-            this.crearBD();
-            this.crearTablas();
-            //this.pruebasRanking();
-            //this.pruebasPersonalizar();
-            //this.pruebasUsuarios();
+	private SGBD() {
+		f = new File("/home/andrea/Documentos/GP/Proyecto_GP_MarioBros/MarioBros/core/assets/bd/mario.db");          
+		if (!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
-        }
-    }
+	}
 
-    public static SGBD getMiSGBD() {
-        if (miSGBD == null) {
-            miSGBD = new SGBD();
-        }
-        return miSGBD;
-    }
+	public static SGBD getMiSGBD() {
+		if (miSGBD == null) {
+			miSGBD = new SGBD();
+		}
+		return miSGBD;
+	}
 
+	public void insert(int puntuacion) throws IOException {
+		FileWriter fname = new FileWriter("/home/andrea/Documentos/GP/Proyecto_GP_MarioBros/MarioBros/core/assets/bd/mario.db", true);
+		PrintWriter printWriter = new PrintWriter(fname);
+		//printWriter.println();
 
-    private void crearBD() {
-        try (Connection con = DriverManager.getConnection("jdbc:sqlite:mario.db")) {
-            if (con != null) {
-                System.out.println("La bd ha sido creada.");
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+		printWriter.println(puntuacion + ";");
+		printWriter.close();
+		 
+		LinkedList<Integer> punt = new LinkedList<>();
+		FileReader fr = new FileReader("/home/andrea/Documentos/GP/Proyecto_GP_MarioBros/MarioBros/core/assets/bd/mario.db");
+		BufferedReader br = new BufferedReader(fr);
+		String line;
+	
+		while ((line = br.readLine()) !=null) {
+			System.out.println(line);
+			
+		}
 
-    public Connection conectarBD() {
-        String url = "jdbc:sqlite:mario.db";
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return conn;
-    }
+	}
 
-    private void crearTablas() {
+	private void read() {
 
-        String ranking = "CREATE TABLE Ranking" +
-                "(IdRanking INTEGER AUTOINCREMENT, "+
-                "Puntuacion INT(11) NOT NULL, " +
-                "PRIMARY KEY(IdRanking)) ";
+	}
 
-        try (Connection con = this.conectarBD();
-             Statement stmt = con.createStatement()) {
-            stmt.execute(ranking);
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-        System.out.println("Tablas creadas");
-    }
-    
-    public void addPuntuacion(int puntuacion) {
-    	try (Connection con = this.conectarBD();
-               Statement stmt = con.createStatement()) {
-               stmt.executeUpdate("INSERT INTO Ranking(Puntuacion)" +
-                       " VALUES("+ puntuacion + ")");
-       
-           } catch (Exception e) {
-               System.err.println(e.getClass().getName() + ": " + e.getMessage());
-               System.exit(0);
-           }
-           System.out.println("Insertados datos ranking");
-    }
-    
-    public ArrayList obtenerPuntuaciones() {
-    	ArrayList<Integer> puntuaciones = new ArrayList<>();
-
-    	// Sentencia sql que obtiene las mejores partidas
-        String sql = "SELECT Puntuacion FROM Ranking ORDER BY Puntuacion DESC LIMIT 5;";
-
-        // Conexión con la base de datos
-        try (Connection conn = SGBD.getMiSGBD().conectarBD();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                int puntuacion = rs.getInt("Puntuacion");
-                puntuaciones.add(puntuacion);
-            }
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        }
-        System.out.println("Consulta obtenerMejoresPartidas terminada");
-        return puntuaciones;
-    }
 }

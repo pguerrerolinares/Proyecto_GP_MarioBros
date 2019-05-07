@@ -152,6 +152,10 @@ public class LayoutScreen implements Disposable {
 
         stage.addActor(helpTable);
     }
+    
+    public String getScore() {
+    	return scoreLb.getText().toString();
+    }
 
     @Override
     public void dispose() {
