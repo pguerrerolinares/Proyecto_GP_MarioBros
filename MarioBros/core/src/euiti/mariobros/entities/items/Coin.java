@@ -17,14 +17,14 @@ public class Coin extends Item {
 
     public Coin(MainScreen mainScreen, float x, float y) {
         super(mainScreen, x, y);
-        Array<TextureRegion> keyFrames = new Array<>();
+        Array<TextureRegion> keyFrames = new Array<TextureRegion>();
         keyFrames.add(new TextureRegion(mainScreen.getTextureAtlas().findRegion("Monedas"), 0, 0, 14, 16));
         keyFrames.add(new TextureRegion(mainScreen.getTextureAtlas().findRegion("Monedas"), 16, 0, 16, 16));
         keyFrames.add(new TextureRegion(mainScreen.getTextureAtlas().findRegion("Monedas"), 32, 0, 16, 16));
         keyFrames.add(new TextureRegion(mainScreen.getTextureAtlas().findRegion("Monedas"), 48, 0, 16, 16));
 
 
-        flipping = new Animation<>(0.03f, keyFrames);
+        flipping = new Animation<TextureRegion>(0.03f, keyFrames);
 
 
         setSize(12 / MarioBros.PPM, 14 / MarioBros.PPM);

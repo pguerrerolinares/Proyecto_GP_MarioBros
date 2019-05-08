@@ -88,15 +88,15 @@ public class Player extends RigidBody {
 
 
         // corré
-        Array<TextureRegion> keyFrames = new Array<>();
+        Array<TextureRegion> keyFrames = new Array<TextureRegion>();
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 14, 0, 12, 19));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 14 * 2, 0, 14, 19));
-        runningSmall = new Animation<>(0.15f, keyFrames);
+        runningSmall = new Animation<TextureRegion>(0.15f, keyFrames);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 16, 0, 16, 33));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), (16 * 2) + 2, 0, 16, 33));
-        runningBig = new Animation<>(0.15f, keyFrames);
+        runningBig = new Animation<TextureRegion>(0.15f, keyFrames);
         keyFrames.clear();
 
 
@@ -106,7 +106,7 @@ public class Player extends RigidBody {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 285, 0, 14, 33));
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 0, 0, 14, 33));
         }
-        growing = new Animation<>(0.09f, keyFrames);
+        growing = new Animation<TextureRegion>(0.09f, keyFrames);
 
         keyFrames.clear();
 
@@ -115,7 +115,7 @@ public class Player extends RigidBody {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 0, 0, 14, 33));
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 285, 0, 14, 33));
         }
-        shrinking = new Animation<>(0.1f, keyFrames);
+        shrinking = new Animation<TextureRegion>(0.1f, keyFrames);
         keyFrames.clear();
 
         dying = new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 160, 0, 16, 19);
@@ -123,13 +123,13 @@ public class Player extends RigidBody {
         // ganá
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 178, 0, 16, 19));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 196, 0, 14, 19));
-        winningSmall = new Animation<>(0.2f, keyFrames);
+        winningSmall = new Animation<TextureRegion>(0.2f, keyFrames);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 319, 0, 15, 33));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 301, 0, 16, 32));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("Mariogrande"), 337, 0, 15, 33));
-        winningBig = new Animation<>(0.2f, keyFrames);
+        winningBig = new Animation<TextureRegion>(0.2f, keyFrames);
         keyFrames.clear();
 
 

@@ -12,7 +12,7 @@ public class SGBD {
     private static SGBD miSGBD;
 
     private SGBD() {
-        File f = new File("core/bd/mario.db");
+        File f = new File("mario.db");
         if (!f.exists()) {
             try {
                 f.createNewFile();
@@ -37,7 +37,7 @@ public class SGBD {
         LinkedList<String> listPunt1 = addInOrder(listPunt, puntuacion);
 
         // Escribimos el nuevo orden en el archivo
-        FileWriter fname = new FileWriter("core/bd/mario.db");
+        FileWriter fname = new FileWriter("mario.db");
         PrintWriter printWriter = new PrintWriter(fname);
         for (int j = 0; j < listPunt1.size(); j++) {
             if (j < 5) {
@@ -50,8 +50,8 @@ public class SGBD {
     }
 
     public LinkedList<String> readFile() throws IOException {
-        LinkedList<String> listPunt = new LinkedList<>();
-        FileReader fr = new FileReader("core/bd/mario.db");
+        LinkedList<String> listPunt = new LinkedList<String>();
+        FileReader fr = new FileReader("mario.db");
         BufferedReader br = new BufferedReader(fr);
         String line;
 

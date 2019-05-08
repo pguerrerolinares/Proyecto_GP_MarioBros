@@ -122,8 +122,8 @@ public class MainScreen implements Screen {
 
 
         // for spawning item
-        items = new Array<>();
-        itemSpawnQueue = new LinkedList<>();
+        items = new Array<Item>();
+        itemSpawnQueue = new LinkedList<SpawningItem>();
 
 
         accumulator = 0;
