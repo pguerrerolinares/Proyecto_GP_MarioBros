@@ -18,12 +18,13 @@ import euiti.mariobros.system.MarioBros;
 public class RankingScreen implements Screen {
     private MarioBros game;
     private Stage stage;
-
+    private LinkedList<String[]> listPunt;
     private float countDown;
 
-    RankingScreen(Game game, LinkedList<String> listPunt) {
+    RankingScreen(Game game, LinkedList<String[]> listPunt) {
+        this.listPunt = listPunt;
         this.game = (MarioBros) game;
-        stage = new Stage(new FitViewport(MarioBros.WINDOW_WIDTH, MarioBros.WINDOW_HEIGHT));
+        stage = new Stage(new FitViewport(MarioBros.WINDOW_WIDTH*1.5f, MarioBros.WINDOW_HEIGHT*1.5f));
 
         Table table = new Table();
         table.setFillParent(true);
@@ -31,7 +32,7 @@ public class RankingScreen implements Screen {
 
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-        Label title = new Label("Rankings", labelStyle);
+        Label title = new Label("Ranking", labelStyle);
         table.add(title).expandX();
 
         table.row();
@@ -39,17 +40,18 @@ public class RankingScreen implements Screen {
         table.add(blanc).expandX();
 
 
-        for (String s : listPunt) {
-            table.row();
-            Label p = new Label(s, labelStyle);
-            table.add(p).expandX();
+        for (String[] s : listPunt) {
 
+            table.row();
+            Label p = new Label(s[0], labelStyle);
+            Label p1 = new Label(s[1], labelStyle);
+            table.add(p).expandX();
+            table.add(p1).expandX();
         }
         stage.addActor(table);
 
-        countDown = 4.5f;
+        countDown = 6f;
 
-        MarioBros.getAssetManager().finishLoading();
     }
 
     @Override
@@ -59,10 +61,17 @@ public class RankingScreen implements Screen {
     }
 
     public void update(float delta) {
-        countDown -= delta;
 
-        if (countDown < 0.0f) {
-            game.setScreen(new GameOverScreen(game));
+        //System.out.println(countDown);
+        if (MarioBros.RANKVISIBLE) {
+            countDown -= delta;
+            if (countDown < 0.0f) {
+                game.setScreen(new GameOverScreen(game));
+                dispose();
+            }
+        } else {
+            MarioBros.RANKVISIBLE = true;
+            game.setScreen(new RankingScreen(game, this.listPunt));
             dispose();
         }
     }

@@ -518,7 +518,7 @@ public class Player extends RigidBody {
         isLevelCompleted = true;
         slide = true;
 
-        int point = (int) MathUtils.clamp(getY(), 2.0f, 10.0f) * 100;
+        int point = (int) MathUtils.clamp(getY(), 2.0f, 10.0f) * 500;
         MarioBros.addScore(point);
 
         winner = true;

@@ -152,7 +152,7 @@ public class MainScreen implements Screen {
             public void run() {
 
                 int score = MarioBros.getScore();
-                LinkedList<String> listPunt = new LinkedList<String>();
+                LinkedList<String[]> listPunt = new LinkedList<String[]>();
 
                 SGBD mydb = SGBD.getMiSGBD();
                 try {
@@ -166,8 +166,11 @@ public class MainScreen implements Screen {
                     e.printStackTrace();
                 }
                 MarioBros.gameOver();
+
                 gameMain.setScreen(new RankingScreen(gameMain, listPunt));
+                MarioBros.RANKVISIBLE = true;
                 dispose();
+
             }
         });
         levelCompletedStage.addAction(new SequenceAction(new DelayAction(8.0f), setLevelCompletedScreen));

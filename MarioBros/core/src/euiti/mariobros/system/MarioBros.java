@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import euiti.mariobros.screens.MainScreen;
-import euiti.mariobros.utils.SGBD;
 
 public class MarioBros extends Game {
     public SpriteBatch batch;
@@ -35,6 +34,7 @@ public class MarioBros extends Game {
     public static final short ITEM_BIT = 64;
     public static final short WEAPON_BIT = 128;
     public static final short FLAGPOLE_BIT = 256;
+    public static boolean RANKVISIBLE = false;
 
     private static final String musicPath = "sound/";
 
