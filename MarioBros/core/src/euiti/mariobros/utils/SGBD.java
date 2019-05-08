@@ -83,9 +83,11 @@ public class SGBD {
 		if( (i == listPunt.size() && i == 0 && posicion) || (i == listPunt.size() && i == 0)) {
 			listPunt.add(0, String.valueOf(puntuacion));
 			System.out.println("hola");
-		}else {
+		}else if(posicion) {
 			listPunt.add(i-1, String.valueOf(puntuacion));
 			System.out.println("ei");
+		}else {
+			listPunt.add(i, String.valueOf(puntuacion));
 		}
 
 	

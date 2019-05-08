@@ -118,7 +118,7 @@ public class MainScreen implements Screen {
         WorldCollision worldCollision = new WorldCollision(this, tiledMap);
         mapTileObjects = worldCollision.getMapTileObject();
         enemies = worldCollision.getEnemies();
-        player = new Player(this, (worldCollision.getStartPosition().x + 8) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
+        player = new Player(this, (worldCollision.getStartPosition().x + 3000) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
 
 
         // for spawning item
