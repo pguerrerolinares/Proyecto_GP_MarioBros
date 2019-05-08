@@ -15,34 +15,33 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import euiti.mariobros.system.MarioBros;
 
-public class RankingScreen implements Screen{
-	private MarioBros game;
+public class RankingScreen implements Screen {
+    private MarioBros game;
     private Stage stage;
 
     private float countDown;
 
-    public RankingScreen(Game game, LinkedList<String> listPunt) {
+    RankingScreen(Game game, LinkedList<String> listPunt) {
         this.game = (MarioBros) game;
-        stage = new Stage(new FitViewport(MarioBros.WINDOW_WIDTH , MarioBros.WINDOW_HEIGHT));
-        
+        stage = new Stage(new FitViewport(MarioBros.WINDOW_WIDTH, MarioBros.WINDOW_HEIGHT));
+
         Table table = new Table();
         table.setFillParent(true);
         table.top();
 
-    
+
         Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-        Label title = new Label("Ranking", labelStyle);
+        Label title = new Label("Rankings", labelStyle);
         table.add(title).expandX();
 
         table.row();
         Label blanc = new Label("", labelStyle);
         table.add(blanc).expandX();
 
-        
-        for (int i = 0; i<listPunt.size(); i++) {
-        	table.row();
-        	String punt = listPunt.get(i);
-            Label p = new Label(punt, labelStyle);
+
+        for (String s : listPunt) {
+            table.row();
+            Label p = new Label(s, labelStyle);
             table.add(p).expandX();
 
         }

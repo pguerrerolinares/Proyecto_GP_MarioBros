@@ -12,7 +12,7 @@ public abstract class RigidBody extends Sprite {
     protected Body body;
 
     protected boolean toBeDestroyed;
-    protected boolean destroyed;
+    private boolean destroyed;
 
     public RigidBody(MainScreen mainScreen, float x, float y) {
         this.mainScreen = mainScreen;

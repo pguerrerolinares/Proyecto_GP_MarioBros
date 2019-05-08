@@ -3,7 +3,6 @@ package euiti.mariobros.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -16,14 +15,11 @@ import euiti.mariobros.entities.enemies.Enemy;
 import euiti.mariobros.entities.items.Item;
 import euiti.mariobros.screens.MainScreen;
 import euiti.mariobros.system.MarioBros;
-//import javafx.stage.Stage;
 
 
 public class Player extends RigidBody {
     private Animation<TextureRegion> winningSmall;
     private Animation<TextureRegion> winningBig;
-    private final TextureRegion sladingBig;
-    private TextureRegion sladingSmall;
     private boolean slide;
     private boolean winner;
 
@@ -137,13 +133,6 @@ public class Player extends RigidBody {
         keyFrames.clear();
 
 
-        // queda raro
-        sladingSmall = new TextureRegion(textureAtlas.findRegion("Mariopequeno"), 79, 0, 14, 19);
-        sladingBig = new TextureRegion(textureAtlas.findRegion("Mariogrande"), 189, 0, 14, 29);
-
-        keyFrames.clear();
-
-
         setRegion(standingSmall);
         setBounds(getX(), getY(), 14 / MarioBros.PPM, 16 / MarioBros.PPM);
 
@@ -228,21 +217,20 @@ public class Player extends RigidBody {
 
     }
 
-    private void defineBigMario() {
-        // crear this
-        // nuevas colisiones cuando sea grande
-
-    }
 
     private void handleInput() {
         float maxSpeed = 6.0f;
         float force = 20.0f;
 
-        // prueba crecer
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             growUp = true;
         }
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) && ground) {
+            body.applyLinearImpulse(new Vector2(0, 30.0f), body.getWorldCenter(), true);
+            jumpSoundTimer = 0;
+            jump = true;
+            smallJump = true;
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && ground) {
             body.applyLinearImpulse(new Vector2(0, 20.0f), body.getWorldCenter(), true);
@@ -250,6 +238,7 @@ public class Player extends RigidBody {
             jump = true;
             smallJump = true;
         }
+
 
         if (smallJump && jumpSoundTimer > 0.15f) {
             assetManager.get("sound/Jump.ogg", Sound.class).play();
@@ -288,7 +277,7 @@ public class Player extends RigidBody {
             body.setTransform(196.0f, body.getPosition().y, 0);
             body.setLinearVelocity(new Vector2(0, -9f));
         } else {
-            if (getX() < 201.0f)
+            if (getX() < 200.97f)
                 body.applyLinearImpulse(new Vector2(body.getMass() * (4.0f - body.getLinearVelocity().x), 0f), body.getWorldCenter(), true);
         }
     }
@@ -422,7 +411,6 @@ public class Player extends RigidBody {
                 setRegion(growing.getKeyFrame(stateTime, false));
                 if (growing.isAnimationFinished(stateTime)) {
                     growUp = false;
-                    defineBigMario();
                 }
                 break;
             case RUNNING:
@@ -493,7 +481,6 @@ public class Player extends RigidBody {
         } else if (other.getFilter().categoryBits == MarioBros.ENEMY_LETHAL_BIT) {
 
 
-            // frame de inmortalidad
             if (shrink) {
                 return;
             }

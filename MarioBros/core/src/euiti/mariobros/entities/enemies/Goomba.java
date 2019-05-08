@@ -90,16 +90,8 @@ public class Goomba extends Enemy {
 
     @Override
     public void update(float delta) {
-        if (destroyed) {
+        if (!super.checkDestroyed())
             return;
-        }
-
-        if (toBeDestroyed) {
-            world.destroyBody(body);
-            setBounds(0, 0, 0, 0);
-            destroyed = true;
-            return;
-        }
 
         if (mainScreen.getMarioPosition().x + MarioBros.V_WIDTH / 2 + 4 > body.getPosition().x)
             active = true;

@@ -36,7 +36,7 @@ import euiti.mariobros.utils.WorldCollision;
 import euiti.mariobros.utils.WorldContactListener;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.LinkedList;
 
 
@@ -118,7 +118,7 @@ public class MainScreen implements Screen {
         WorldCollision worldCollision = new WorldCollision(this, tiledMap);
         mapTileObjects = worldCollision.getMapTileObject();
         enemies = worldCollision.getEnemies();
-        player = new Player(this, (worldCollision.getStartPosition().x + 8) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
+        player = new Player(this, (worldCollision.getStartPosition().x + 3000) / MarioBros.PPM, (worldCollision.getStartPosition().y + 8) / MarioBros.PPM);
 
 
         // for spawning item
@@ -158,15 +158,13 @@ public class MainScreen implements Screen {
                 try {
                     mydb.insert(score);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-				try {
-					listPunt = mydb.readFile();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                try {
+                    listPunt = mydb.readFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 MarioBros.gameOver();
                 gameMain.setScreen(new RankingScreen(gameMain, listPunt));
                 dispose();
@@ -223,12 +221,10 @@ public class MainScreen implements Screen {
             }
         }
 
-        // cmabiar a debug
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             renderB2DDebug = !renderB2DDebug;
         }
 
-        //Ayuda
         if (Gdx.input.isKeyJustPressed(Input.Keys.F1)) {
             layoutScreen.help();
         }
@@ -269,33 +265,27 @@ public class MainScreen implements Screen {
             player.killMario();
         }
 
-        // Box2D world step
         accumulator += delta;
         if (accumulator > step) {
             world.step(step, 8, 3);
             accumulator -= step;
         }
 
-        // update map tile objects
         for (MapTileObject mapTileObject : mapTileObjects) {
             mapTileObject.update(delta);
         }
 
-        // update enemies
         for (Enemy enemy : enemies) {
             enemy.update(delta);
         }
 
-        // update items
         for (Item item : items) {
             item.update(delta);
         }
 
 
-        // update Player
         player.update(delta);
 
-        // camera control
         float targetX = camera.position.x;
         if (!player.isDead()) {
             targetX = MathUtils.clamp(player.getPosition().x, cameraLeftLimit, cameraRightLimit);
@@ -307,22 +297,16 @@ public class MainScreen implements Screen {
         }
         camera.update();
 
-        // update map renderer
         mapRenderer.setView(camera);
 
-
-        // update HUD
         layoutScreen.update(delta);
 
 
         cleanUpDestroyedObjects();
 
 
-        // check if Player is dead y cambiar pantalla
         if (player.isDead()) {
-
             countDown -= delta;
-
             if (countDown < 0) {
                 MarioBros.removeLife();
                 if (MarioBros.getLife() < 1) {
@@ -331,6 +315,7 @@ public class MainScreen implements Screen {
                     gameMain.setScreen(new GameOverScreen(gameMain));
                     dispose();
                 } else {
+                    MarioBros.clearScore();
                     gameMain.setScreen(new MainScreen(gameMain));
 
                 }
@@ -338,8 +323,6 @@ public class MainScreen implements Screen {
             }
         }
 
-
-        // update levelCompletedStage
         if (levelCompleted) {
             levelCompletedStage.act(delta);
         }
@@ -364,44 +347,34 @@ public class MainScreen implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // draw map
         mapRenderer.render();
-
 
         gameMain.batch.setProjectionMatrix(camera.combined);
         gameMain.batch.begin();
 
-        // draw map tile objects
         for (MapTileObject mapTileObject : mapTileObjects) {
             mapTileObject.draw(gameMain.batch);
         }
 
-
-        // draw items
         for (Item item : items) {
             item.draw(gameMain.batch);
         }
 
-        // draw enemies
         for (Enemy enemy : enemies) {
             enemy.draw(gameMain.batch);
         }
 
 
-        // draw Player
         player.draw(gameMain.batch);
 
         gameMain.batch.end();
 
-
-        // draw HUD
         layoutScreen.draw();
 
         if (renderB2DDebug) {
             box2DDebugRenderer.render(world, camera.combined);
         }
 
-        // draw levelCompletedStage
         levelCompletedStage.draw();
 
         update(delta);

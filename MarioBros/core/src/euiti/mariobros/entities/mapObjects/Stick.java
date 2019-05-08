@@ -1,6 +1,5 @@
 package euiti.mariobros.entities.mapObjects;
 
-import java.io.IOException;
 
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -10,7 +9,6 @@ import euiti.mariobros.entities.Collider;
 import euiti.mariobros.entities.Player;
 import euiti.mariobros.screens.MainScreen;
 import euiti.mariobros.system.MarioBros;
-import euiti.mariobros.utils.SGBD;
 
 public class Stick extends MapTileObject {
 

@@ -7,19 +7,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 public class SGBD {
     private static SGBD miSGBD;
-    private File f;
 
     private SGBD() {
-        f = new File("core/bd/mario.db");
+        File f = new File("core/bd/mario.db");
         if (!f.exists()) {
             try {
                 f.createNewFile();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -37,11 +34,7 @@ public class SGBD {
         // Leemos el archivo
         LinkedList<String> listPunt = readFile();
 
-        System.out.println(listPunt);
-
         LinkedList<String> listPunt1 = addInOrder(listPunt, puntuacion);
-
-        System.out.println(listPunt1);
 
         // Escribimos el nuevo orden en el archivo
         FileWriter fname = new FileWriter("core/bd/mario.db");
@@ -56,11 +49,15 @@ public class SGBD {
 
     }
 
-    public LinkedList<Integer> readFile() throws IOException {
-        LinkedList<Integer> listPunt = new LinkedList<>();
-        File fr = new File("core/bd/mario.db");
+    public LinkedList<String> readFile() throws IOException {
+        LinkedList<String> listPunt = new LinkedList<>();
+        FileReader fr = new FileReader("core/bd/mario.db");
+        BufferedReader br = new BufferedReader(fr);
+        String line;
 
-
+        while ((line = br.readLine()) != null) {
+            listPunt.add(line);
+        }
         return listPunt;
     }
 
@@ -75,14 +72,12 @@ public class SGBD {
             }
             i++;
         }
-
-        System.out.println(i);
         if ((i == listPunt.size() && i == 0 && posicion) || (i == listPunt.size() && i == 0)) {
             listPunt.add(0, String.valueOf(puntuacion));
-            System.out.println("hola");
-        } else {
+        } else if (posicion) {
             listPunt.add(i - 1, String.valueOf(puntuacion));
-            System.out.println("ei");
+        } else {
+            listPunt.add(i, String.valueOf(puntuacion));
         }
 
 

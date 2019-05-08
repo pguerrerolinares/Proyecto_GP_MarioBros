@@ -23,9 +23,9 @@ public class GameOverScreen implements Screen {
 
     private float countDown;
 
-    public GameOverScreen(Game game) {
+    GameOverScreen(Game game) {
         this.game = (MarioBros) game;
-        stage = new Stage(new FitViewport(MarioBros.WINDOW_WIDTH / 2, MarioBros.WINDOW_HEIGHT / 2));
+        stage = new Stage(new FitViewport(MarioBros.WINDOW_WIDTH / 2f, MarioBros.WINDOW_HEIGHT / 2f));
 
         Label gameOverTextLabel = new Label("Game Over", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 

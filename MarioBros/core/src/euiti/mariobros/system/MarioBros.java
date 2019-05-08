@@ -49,8 +49,6 @@ public class MarioBros extends Game {
 
     @Override
     public void create() {
-
-    	SGBD mydb = SGBD.getMiSGBD();
         batch = new SpriteBatch();
 
         assetManager = new AssetManager();
@@ -93,6 +91,10 @@ public class MarioBros extends Game {
 
     public static int getScore() {
         return score;
+    }
+
+    public static void clearScore() {
+        score = 0;
     }
 
     private static void clear() {
