@@ -1,2 +1,2 @@
 # Proyecto_GP_MarioBros
-MarioBrazzer
+Primera pantalla del juego MarioBros, desarrollado en Java con el framework LibGDX. 
